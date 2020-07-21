@@ -1,7 +1,7 @@
 from flask import Flask
 from loguru import logger
 
-app = Flask(__name__, instance_relative_config=False, static_url_path='/static')
+app = Flask(__name__, static_url_path='/static')
 
 
 @app.route('/')

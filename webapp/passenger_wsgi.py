@@ -5,14 +5,13 @@ from run import app as application
 
 INTERP = "/home/eproject/anaconda3/envs/algo101/bin/python"
 if sys.executable != INTERP: os.execl(INTERP, INTERP, *sys.argv)
-
+algo102_path = '/home/eproject/vee-h-phan.com/algo102'
 sys.path.extend([
-    '/home2/eproject/veehuen/python/algo102/helpers',
-    '/home2/eproject/veehuen/python/algo102/lib',
-    '/home2/eproject/veehuen/python/algo102/webapp/app',
-    '/home2/eproject/veehuen/python/algo102/webapp',
-    '/home2/eproject/veehuen/python/algo102',
-    '/home/eproject/veehuen/python/algo102'
+    f'{algo102_path}/helpers',
+    f'{algo102_path}/lib',
+    f'{algo102_path}/webapp/app',
+    f'{algo102_path}/webapp',
+    f'{algo102_path}',
 ])
 
 if __name__ == "__main__":

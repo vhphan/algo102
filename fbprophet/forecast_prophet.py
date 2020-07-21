@@ -73,9 +73,9 @@ def forecast(symbols, min_points=120):
 
 if __name__ == '__main__':
 
-    for symbol in symbols.copy():
-        if os.path.isfile(f'{APP_PATH}/fbprophet/csv_forecast/{symbol}.zip'):
-            symbols.remove(symbol)
+    # for symbol in symbols.copy():
+    #     if os.path.isfile(f'{APP_PATH}/fbprophet/csv_forecast/{symbol}.zip'):
+    #         symbols.remove(symbol)
 
     chunks = chunk_it(symbols, max_workers)
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:

@@ -22,13 +22,12 @@
 
 
     <!--    JS Grid-->
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"/>
-    <link type="text/css" rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"/>
+    <!--    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"/>-->
+    <!--    <link type="text/css" rel="stylesheet"-->
+    <!--          href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"/>-->
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.15.6/metricsgraphics.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css">
+    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.15.6/metricsgraphics.css">-->
+    <!--    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
 
     <!--    <script src="https://code.highcharts.com/highcharts.js" ></script >-->
     <!--    <script src="https://code.highcharts.com/modules/data.js" ></script >-->
@@ -40,7 +39,7 @@
 
 </head>
 
-<body onload="zoom()">
+<body>
 <!--        spinner/loader -->
 <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-sm">
@@ -56,26 +55,26 @@
     <nav id="sidebar" class="sticky-top">
 
         <div class="sidebar-header sticky-top">
-            <h3>Simple Scanner<sup></sup></h3>
+            <h3>Stock Screener<sup></sup></h3>
         </div>
 
         <!--        navigation normal-->
-        <ul class="list-unstyled components">
+        <ul class="list-unstyled components sticky-top">
             <li class="active">
                 <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="true"
                    class="dropdown-toggle">Work in Progress</a>
                 <ul class="collapse list-unstyled show" id="homeSubmenu">
+                    <!--                    <li>-->
+                    <!--                        <a href="#">Nothing here yet. Work in Progress..</a>-->
+                    <!--                    </li>-->
                     <li>
-                        <a href="#">Nothing here yet. Work in Progress..</a>
+                        <a href="#content" id="section1">Main</a>
                     </li>
                     <li>
-                        <a href="#" id="summary">Summary</a>
+                        <a href="#indicators" id="section2">Indicators</a>
                     </li>
                     <li>
-                        <a href="#" id="dashboard1">Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="#" id="about">About</a>
+                        <a href="#about-content" id="section3">About</a>
                     </li>
 
                 </ul>
@@ -96,7 +95,7 @@
                     <span></span>
                     <span></span>
                 </button>
-                <span><h5 id="current-page" class="ml-5 pt-2"> current page:  </h5>
+                <span class="mx-auto"><h5 id="current-page" class="pt-2"> Simple Stock Screener  </h5>
 </span>
                 <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -122,18 +121,16 @@
         </div>
 
 
-        <div class="alert alert-danger alert-dismissible" id="ajax-fail" style="display: none;">
-            <a href="#" class="close" onclick="$('#ajax-fail').hide()" aria-label="close">&times;</a>
-            <strong>Error!</strong> <span id="ajax-fail-msg"> while trying to get the data. Try again. If problem persists, contact
-            admin.</span>
+        <div id="ajax-fail">
+
         </div>
 
 
-        <div id="selectedContent" class="container-fluid row">
-            <div class="row">
+        <div id="selectedContent" class="container-fluid">
 
+            <div class="row" id="main">
                 <div id="main-chart" class="col-md-8"></div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <button class="btn btn-outline-secondary text-white" type="button">TICKER</button>
@@ -149,20 +146,26 @@
 
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                
 
             </div>
-            <div class="col-12">
-                TradingView Lightweight Charts
-                Copyright (с) 2020 TradingView, Inc. https://www.tradingview.com/
+            <div class="row" id="indicators">
+                <!--                <div id="bar-chart" class="col-md-9"></div>-->
+                <div id="pie-chart" class="col-md-6 p-1"></div>
+                <div id="gauge-chart" class="col-md-6 p-1"></div>
+
             </div>
-            <div class="col-12 mt-1">
+
+            <div class="col-12 mt-5 p-5 mb-5" id="about-content">
+                <h5>About</h5>
                 <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
-                <h5>DISCLAIMER</h5>
-                <p>Purely for my educational purpose only</p>
-                <p>Simple stock screener. Uses simple time-series forecast. Top 100 trending stocks shown. The stocks
+                <p>Objectives:</p>
+                <ol>
+                    <li>Educational purpose (Especially my own). </li>
+                    <li>As a simple app to add to my coding portfolio. </li>
+                    <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or
+                        investment advice.</em></li>
+                </ol>
+                <p>Simple stock screener. Uses simple time-series forecasting. Top 100 trending stocks shown. The stocks
                     are filtered from 8000+ stocks traded in the US.</p>
                 <p>
                     Uses the following:
@@ -170,17 +173,20 @@
                 <ul>
                     <li><a href="https://finnhub.io/docs/api">Finhubb financial API</a></li>
                     <li>
-                        <a href="https://facebook.github.io/prophet/">Facebook Prophet library</a>
+                        <a href="https://facebook.github.io/prophet/">Facebook Prophet library (Python)</a>
                     </li>
                     <li>
-                        <a href="https://www.tradingview.com/lightweight-charts/">Lightweight Charts</a>
+                        <a href="https://echarts.apache.org/en/index.html">ECharts.js</a>
                     </li>
                     <li>
                         Python Flask on backend. Vanilla Javascript on the frontend.
                     </li>
+                    <li>
+                        Bootstrap 4 CSS Framework.
+                    </li>
 
                 </ul>
-
+                <div style="height: 300px"></div>
 
             </div>
         </div>
@@ -202,7 +208,6 @@
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -216,17 +221,19 @@
 
 <!--😇-->
 <!--😍-->
-<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-<script src="/static/js/my_chart.js"></script>
+
+<!--<script src="/static/js/my_chart.js"></script>-->
+<script src="/static/js/echarts.min.js"></script>
+<script src="/static/js/myEChart.js"></script>
 
 </body>
 <script type="text/javascript">
-    function zoom() {
-        // document.body.style.zoom = "85%";
-        let selectedContent = document.getElementById('selectedContent');
-        selectedContent.style.zoom = "82%";
-
-    }
+    // function zoom() {
+    //     // document.body.style.zoom = "85%";
+    //     let selectedContent = document.getElementById('selectedContent');
+    //     selectedContent.style.zoom = "82%";
+    //
+    // }
 </script>
 
 

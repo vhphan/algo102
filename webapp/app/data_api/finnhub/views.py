@@ -1,8 +1,11 @@
+import json
+
 import pendulum
 from flask import Blueprint, jsonify
 import sys
 
-from screener.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, comp_prof
+from screener.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, get_company_profile, \
+    get_recommendation_trends, get_aggregate_indicators
 
 fh = Blueprint("fh", __name__, url_prefix='/fh')
 
@@ -45,4 +48,16 @@ def fh_index():
 
 @fh.route('/company-profile/<symbol>')
 def company_profile(symbol):
-    return comp_prof(symbol, return_type='html')
+    return get_company_profile(symbol, return_type='html')
+
+
+@fh.route('/recommendation-trends/<symbol>')
+def recommendation_trends(symbol):
+    return jsonify(get_recommendation_trends(symbol))
+
+
+@fh.route('/aggregate-indicators/<symbol>')
+def aggregate_indicators(symbol):
+    return jsonify(get_aggregate_indicators(symbol))
+
+

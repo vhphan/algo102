@@ -515,8 +515,33 @@ ul.tree li.open > a:not(:last-child):before {
 #main-chart {
 
     height: 450px;
+    width: 800px;
+
+}
+
+#bar-chart {
+
+    height: 450px;
+    width: 600px;
+
+}
+
+#pie-chart {
+
+    height: 450px;
+    width: 450px;
+
+}
+
+#gauge-chart {
+
+    height: 450px;
+    width: 450px;
 
 }
 
 /*End of Charts Div*/
 
+html {
+  scroll-behavior: smooth;
+}
