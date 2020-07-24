@@ -1,9 +1,12 @@
 import time
+from pprint import pprint
+
 import pendulum
 import pandas as pd
 import datetime
 from datetime import timezone
 import finnhub
+from lib.retry_decorator import Retry
 
 # Configure API key
 from lib.my_email import send_eri_mail
@@ -42,12 +45,14 @@ def get_symbols(return_type='dataframe'):
     stocks = finnhub_client.stock_symbols('US')
     stocks_dict = [stock.to_dict() for stock in stocks]
     if return_type == 'dataframe':
-        pd.DataFrame(stocks_dict)
+        return pd.DataFrame(stocks_dict)
     return stocks_dict
 
 
 def get_top_picks():
-    return pd.read_csv('/home2/eproject/veehuen/python/algo102/fbprophet/growth_stocks.csv')
+    df2 = pd.read_csv('/home2/eproject/vee-h-phan.com/algo102/fbprophet/growth_stocks_filtered.csv')
+    df2 = df2[df2['condition_1'] & df2['condition_2'] & df2['condition_3']]
+    return df2.head(100).to_dict(orient='records')
 
 
 def get_company_profile(symbol, return_type='dict'):
@@ -143,7 +148,38 @@ def update_data_db():
         print(f'skipping {symbol}')
 
 
+@Retry(tries=3, delay=120)
+def get_basic_financials(symbol, metric):
+    bs = finnhub_client.company_basic_financials(symbol=symbol, metric=metric)
+    return bs.to_dict()
+
+
+def get_tech_ind(symbol, indicator='macd', indicator_fields=None):
+    print('calling api......')
+    tech_ind = finnhub_client.technical_indicator(symbol=symbol, resolution='D', _from=one_year_ago_u, to=today_u,
+                                                  indicator=indicator)
+    tech_ind_df = pd.DataFrame(tech_ind)
+    return tech_ind_df.rename(columns={
+        't': 'time',
+        'o': 'open',
+        'h': 'high',
+        'l': 'low',
+        'c': 'close',
+        'v': 'volume'
+    }).to_dict('records')
+
+
+def get_news_sentiment(symbol):
+    ns = finnhub_client.news_sentiment(symbol)
+    return ns.to_dict()
+
+
 if __name__ == '__main__':
     # update_data_db()
-    r1 = get_aggregate_indicators('DOCU')
-    r2 = get_recommendation_trends('DOCU')
+    # r = get_basic_financials('DOCU', 'all')
+    r2 = get_tech_ind('DOCU')
+    # pprint(r)
+    # pprint(r2)
+    # r3 = get_news_sentiment('NETE')
+    # pprint(r3)
+    # d = get_top_picks()

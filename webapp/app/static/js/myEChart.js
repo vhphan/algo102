@@ -1,5 +1,3 @@
-let dates = [];
-let data = [];
 const chartDiv = 'main-chart';
 const barChartDiv = 'bar-chart';
 const pieChartDiv = 'pie-chart';
@@ -16,16 +14,32 @@ const gaugeChartDiv = 'gauge-chart';
 const chartContainer = document.getElementById(chartDiv);
 const tableContainer = document.getElementById('profile-container');
 const selectTopPick = document.getElementById('select-top-picks');
+const selectChartType = document.getElementById('select-chart-type');
 const spinner = document.getElementById('spinner');
 const snackbar = document.getElementById('snackbar');
 const currentUrl = document.location.href
 
-const mainChart = echarts.init(document.getElementById(chartDiv));
-const aggChart = echarts.init(document.getElementById(pieChartDiv));
-const gaugeChart = echarts.init(document.getElementById(gaugeChartDiv));
+let mainChart = echarts.init(document.getElementById(chartDiv));
+const aggChart = echarts.init(document.getElementById(pieChartDiv), 'dark');
+const gaugeChart = echarts.init(document.getElementById(gaugeChartDiv), 'dark');
+
+let dates, data, volumes;
 
 // const myBarChart = echarts.init(document.getElementById(barChartDiv));
+function getTheme(theme) {
+    fetch(`/static/json/${theme}.json`)
+        .then(response => JSON.parse(response))
+        .then(themeObj => echarts.registerTheme(theme, themeObj))
 
+    // Assume the theme name is "vintage".
+    // var xhr = new XMLHttpRequest();
+    // xhr.open('GET', `/static/json/${theme}.json`, true);
+    // xhr.onload = function () {
+    //     var themeJSON = this.response;
+    //     echarts.registerTheme(theme, JSON.parse(themeJSON))
+    // }
+    // xhr.send();
+}
 
 function showError(addMsg = '') {
     const errorDiv = document.getElementById('ajax-fail');
@@ -37,6 +51,14 @@ function showError(addMsg = '') {
         "  </button>\n" +
         "</div>";
     errorDiv.innerHTML += htmlVal;
+}
+
+function clearError() {
+    const errorDiv = document.getElementById('ajax-fail');
+    const htmlVal = "";
+    if (errorDiv.innerHTML.indexOf("Error") !== -1) {
+        errorDiv.innerHTML = htmlVal;
+    }
 }
 
 function unpack(key, obj) {
@@ -169,11 +191,23 @@ function barChart(rawData0) {
 
 }
 
-function drawCandlestickChart(data, dates, symbol) {
-    let option = {
-        backgroundColor: '#21202D',
+
+function drawCandlestickChart(data, dates, symbol, volumes) {
+    const dataMA10 = calculateMA(10, data);
+    const dataMA20 = calculateMA(20, data);
+    const dataMA50 = calculateMA(50, data);
+    const dataMA100 = calculateMA(100, data);
+    const windows = [10, 20, 50, 100]
+    let dataMA = [];
+    let dataNameMA = []
+    windows.forEach((window, index) => {
+        dataMA.push(calculateMA(window, data));
+        dataNameMA.push(`MA${window}`);
+    });
+    let option1 = {
+        backgroundColor: '#000',
         legend: {
-            data: [symbol, 'MA5', 'MA10', 'MA20', 'MA30'],
+            data: [symbol].concat(dataNameMA),
             inactiveColor: '#777',
             textStyle: {
                 color: '#fff'
@@ -202,7 +236,9 @@ function drawCandlestickChart(data, dates, symbol) {
             splitLine: {show: false}
         },
         grid: {
-            bottom: 80
+            bottom: 80,
+            left: '3%',
+            right: '3%'
         },
         dataZoom: [{
             textStyle: {
@@ -225,27 +261,32 @@ function drawCandlestickChart(data, dates, symbol) {
                 shadowColor: 'rgba(0, 0, 0, 0.6)',
                 shadowOffsetX: 2,
                 shadowOffsetY: 2
-            }
+            },
+            start: 50,
+            end: 100
         }, {
-            type: 'inside'
+            type: 'inside',
+            start: 50,
+            end: 100
         }],
         animation: false,
         series: [
+
             {
                 type: 'candlestick',
                 name: symbol,
                 data: data,
                 itemStyle: {
-                    color: '#FD1050',
-                    color0: '#0CF49B',
-                    borderColor: '#FD1050',
-                    borderColor0: '#0CF49B'
+                    color: '#0CF49B',
+                    color0: '#FD1050',
+                    borderColor: '#0CF49B',
+                    borderColor0: '#FD1050'
                 }
             },
             {
-                name: 'MA5',
+                name: dataNameMA[0],
                 type: 'line',
-                data: calculateMA(5, data),
+                data: dataMA[0],
                 smooth: true,
                 showSymbol: false,
                 lineStyle: {
@@ -253,9 +294,9 @@ function drawCandlestickChart(data, dates, symbol) {
                 }
             },
             {
-                name: 'MA10',
+                name: dataNameMA[1],
                 type: 'line',
-                data: calculateMA(10, data),
+                data: dataMA[1],
                 smooth: true,
                 showSymbol: false,
                 lineStyle: {
@@ -263,9 +304,9 @@ function drawCandlestickChart(data, dates, symbol) {
                 }
             },
             {
-                name: 'MA20',
+                name: dataNameMA[2],
                 type: 'line',
-                data: calculateMA(20, data),
+                data: dataMA[2],
                 smooth: true,
                 showSymbol: false,
                 lineStyle: {
@@ -273,9 +314,9 @@ function drawCandlestickChart(data, dates, symbol) {
                 }
             },
             {
-                name: 'MA30',
+                name: dataNameMA[3],
                 type: 'line',
-                data: calculateMA(30, data),
+                data: dataMA[3],
                 smooth: true,
                 showSymbol: false,
                 lineStyle: {
@@ -284,8 +325,244 @@ function drawCandlestickChart(data, dates, symbol) {
             }
         ]
     };
+
+    const upColor = '#00da3c';
+    const downColor = '#ec0000';
+    let volumes2 = volumes.map((item, i) => {
+        return [i, item, data[i][0] > data[i][1] ? 1 : -1];
+    });
+
+    let option2 = {
+        backgroundColor: '#000',
+        animation: false,
+        legend: {
+            bottom: 10,
+            left: 'center',
+            data: [symbol].concat(dataNameMA),
+            textStyle: {color: '#fff'}
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            },
+            // backgroundColor: 'rgba(245, 245, 245, 0.8)',
+            borderWidth: 1,
+            // borderColor: '#ccc',
+            padding: 10,
+            textStyle: {
+                // color: '#000'
+            },
+            position: function (pos, params, el, elRect, size) {
+                var obj = {top: 10};
+                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                return obj;
+            },
+            extraCssText: 'width: 170px'
+        },
+        axisPointer: {
+            link: {xAxisIndex: 'all'},
+            label: {
+                backgroundColor: '#777'
+            }
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: false
+                },
+                brush: {
+                    type: ['lineX', 'clear']
+                }
+            }
+        },
+        brush: {
+            xAxisIndex: 'all',
+            brushLink: 'all',
+            outOfBrush: {
+                colorAlpha: 0.1
+            }
+        },
+        visualMap: {
+            show: false,
+            seriesIndex: 5,
+            dimension: 2,
+            pieces: [{
+                value: 1,
+                color: downColor
+            }, {
+                value: -1,
+                color: upColor
+            }]
+        },
+        grid: [
+            {
+                left: '3%',
+                right: '3%',
+                height: '50%',
+            },
+            {
+                left: '3%',
+                right: '3%',
+                top: '63%',
+                height: '16%',
+            }
+        ],
+        xAxis: [
+            {
+                type: 'category',
+                data: dates,
+                scale: true,
+                boundaryGap: false,
+                axisLine: {onZero: false},
+                splitLine: {show: false},
+                splitNumber: 20,
+                min: 'dataMin',
+                max: 'dataMax',
+                axisPointer: {
+                    z: 100
+                },
+                axisLabel: {show: false},
+            },
+            {
+                type: 'category',
+                gridIndex: 1,
+                data: dates,
+                scale: true,
+                boundaryGap: false,
+                axisLine: {onZero: false},
+                axisTick: {show: false},
+                splitLine: {show: false},
+                splitNumber: 20,
+                min: 'dataMin',
+                max: 'dataMax',
+                axisPointer: {
+                    label: {
+                        formatter: function (params) {
+                            var seriesValue = (params.seriesData[0] || {}).value;
+                            return params.value
+                                + (seriesValue != null
+                                        ? '\n' + echarts.format.addCommas(seriesValue)
+                                        : ''
+                                );
+                        }
+                    }
+                },
+                axisLabel: {textStyle: {color: '#fff'}}
+
+            }
+        ],
+        yAxis: [
+            {
+                scale: true,
+                // splitArea: {
+                //     show: true
+                // }
+                axisLabel: {textStyle: {color: '#fff'}},
+                splitLine: {show: false},
+
+
+            },
+            {
+                scale: true,
+                gridIndex: 1,
+                // splitNumber: 2,
+                axisLabel: {show: false},
+                axisLine: {show: false},
+                axisTick: {show: false},
+                splitLine: {show: false},
+            }
+        ],
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: [0, 1],
+                start: 50,
+                end: 100
+            },
+            {
+                show: true,
+                xAxisIndex: [0, 1],
+                type: 'slider',
+                top: '85%',
+                start: 50,
+                end: 100
+            }
+        ],
+        color: ['#1E96FC', '#A2D6F9', '#FCF300', '#FFC600'],
+        series: [
+            {
+                name: symbol,
+                type: 'candlestick',
+                data: data,
+                itemStyle: {
+                    normal: {
+                        color: upColor,
+                        color0: downColor,
+                        borderColor: null,
+                        borderColor0: null
+                    }
+                },
+            },
+            {
+                name: dataNameMA[0],
+                type: 'line',
+                data: dataMA[0],
+                showSymbol: false,
+                smooth: true,
+                lineStyle: {
+                    width: 1
+                }
+            },
+            {
+                name: dataNameMA[1],
+                type: 'line',
+                data: dataMA[1],
+                showSymbol: false,
+                smooth: true,
+                lineStyle: {
+                    width: 1
+
+                }
+            },
+            {
+                name: dataNameMA[2],
+                type: 'line',
+                data: dataMA[2],
+                showSymbol: false,
+                smooth: true,
+                lineStyle: {
+                    width: 1
+
+
+                }
+            },
+            {
+                name: dataNameMA[3],
+                type: 'line',
+                data: dataMA[3],
+                showSymbol: false,
+                smooth: true,
+                lineStyle: {
+                    width: 1
+
+                }
+            },
+            {
+                name: 'Volume',
+                type: 'bar',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                data: volumes2
+            }
+        ]
+    };
+    let chartOptions = [option1, option2]
+    option = chartOptions[parseInt(selectChartType.value) - 1];
     mainChart.setOption(option);
+
 }
+
 
 function drawPieChart(chartData) {
 
@@ -367,6 +644,14 @@ function drawPieChart(chartData) {
     //     ]
     // };
     const option = {
+        backgroundColor: '#000',
+        radius: [0, '100%'],
+        grid: {
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0
+        },
         title: {
             bottom: 0,
             text: 'Aggregated Indicators',
@@ -416,15 +701,25 @@ function drawGaugeChart(chartData = [{value: 40, name: 'ADX'}], trending) {
         }
     }
     const option = {
+        radius: '100%',
+        // left: 0,
+        // right: 0,
+        // top: 0,
+        // bottom: 0,
+        // grid: {
+        //     left: 0,
+        //     top: 0,
+        //     right: 0,
+        //     bottom: 0
+        // },
         title: {
             text: 'Average Directional Index',
             subtext: 'Trending=' + trending,
             left: 'center',
             textStyle: {color: '#fff'},
             bottom: 0,
-
         },
-        backgroundColor: '#1b1b1b',
+        backgroundColor: '#000',
         tooltip: {
             formatter: '{a} <br/>{c} {b}'
         },
@@ -505,7 +800,6 @@ function drawGaugeChart(chartData = [{value: 40, name: 'ADX'}], trending) {
                 },
                 data: chartData
             },
-
         ]
     };
     gaugeChart.setOption(option);
@@ -679,8 +973,10 @@ function loadChartData(symbol = 'DOCU', from = null, to = null) {
                 data = rawData.map(function (item) {
                     return [+item['open'], +item['close'], +item['low'], +item['high']]; // oclh
                 });
-                drawCandlestickChart(data, dates, symbol);
+                volumes = unpack('volume', rawData)
+                drawCandlestickChart(data, dates, symbol, volumes);
                 hideSpinner();
+                clearError();
             }
         ).catch(err => {
         showError('getting data for ' + symbol);
@@ -766,6 +1062,14 @@ document.addEventListener("DOMContentLoaded", function () {
     selectTopPick.addEventListener('change', function () {
         console.log('You selected: ', this.value);
         reloadCharts(this.value);
+    });
+
+    selectChartType.addEventListener('change', function () {
+        let symbol = selectTopPick.value;
+        mainChart.dispose();
+        mainChart = echarts.init(document.getElementById(chartDiv), 'light')
+
+        drawCandlestickChart(data, dates, symbol, volumes);
     });
     // eventFire(document.getElementById('sidebarCollapse'), 'click');
 

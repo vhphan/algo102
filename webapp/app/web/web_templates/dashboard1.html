@@ -129,11 +129,27 @@
         <div id="selectedContent" class="container-fluid">
 
             <div class="row" id="main">
-                <div id="main-chart" class="col-md-8"></div>
+                <div class="col-md-8">
+                    <div class="col-8" id="chart-type">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary bg-success text-white" type="button">Chart Type
+                                </button>
+                            </div>
+                            <label for="select-chart-type"></label><select class="custom-select" id="select-chart-type">
+                                <option value="1">Basic</option>
+                                <option value="2">Basic+Vol</option>
+                                <!--                                                    <option value="3">Three</option>-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12" id="main-chart"></div>
+                </div>
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <button class="btn btn-outline-secondary text-white" type="button">TICKER</button>
+                            <button class="btn btn-outline-secondary bg-success text-white" type="button">TICKER
+                            </button>
                         </div>
                         <select class="custom-select" id="select-top-picks">
                             <!--                    <option selected>Choose...</option>-->
@@ -150,8 +166,8 @@
             </div>
             <div class="row" id="indicators">
                 <!--                <div id="bar-chart" class="col-md-9"></div>-->
-                <div id="pie-chart" class="col-md-6 p-1"></div>
-                <div id="gauge-chart" class="col-md-6 p-1"></div>
+                <div id="pie-chart" class="col-md-6 p-0 m-0"></div>
+                <div id="gauge-chart" class="col-md-6 p-0 m-0"></div>
 
             </div>
 
@@ -160,8 +176,8 @@
                 <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
                 <p>Objectives:</p>
                 <ol>
-                    <li>Educational purpose (Especially my own). </li>
-                    <li>As a simple app to add to my coding portfolio. </li>
+                    <li>Educational purpose (Especially my own).</li>
+                    <li>As a simple app to add to my coding portfolio.</li>
                     <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or
                         investment advice.</em></li>
                 </ol>

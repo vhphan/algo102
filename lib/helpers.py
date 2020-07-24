@@ -1,3 +1,6 @@
+import gzip
+import json
+
 import pandas as pd
 import psutil
 
@@ -65,6 +68,22 @@ def check_process_status(process_name):
                 print('/n')
     else:
         print("Process name not valid", process_name)
+
+
+def dict_to_json_zipped(obj, file_name):
+    json_str = json.dumps(obj) + "\n"  # 2. string (i.e. JSON)
+    json_bytes = json_str.encode('utf-8')  # 3. bytes (i.e. UTF-8)
+
+    with gzip.GzipFile(file_name, 'w') as fout:  # 4. gzip
+        fout.write(json_bytes)
+
+
+def json_zipped_to_dict(file_name):
+    with gzip.GzipFile(file_name, 'r') as fin:  # 4. gzip
+        json_bytes = fin.read()  # 3. bytes (i.e. UTF-8)
+
+    json_str = json_bytes.decode('utf-8')  # 2. string (i.e. JSON)
+    return json.loads(json_str)
 
 
 if __name__ == '__main__':
