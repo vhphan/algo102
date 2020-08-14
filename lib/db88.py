@@ -57,7 +57,7 @@ class DB88(object):
         self.connection.commit()
 
     def execute(self, sql_query, params=None):
-        self.cursor.execute(sql_query, params or ())
+        return self.cursor.execute(sql_query, params or ())
 
     def fetchall(self):
         return self.cursor.fetchall()

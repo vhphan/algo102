@@ -12,7 +12,7 @@ from cache import cache
 logger.add(f"{APP_PATH}/logs/ds2_{today_str}.log", rotation="1 MB", backtrace=True, diagnose=True)
 session_path = "/tmp/python_recipe_sessions"
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)
 app.config.from_pyfile("config.py")
 csrf = CSRFProtect(app)
 cache.init_app(app)
@@ -24,3 +24,4 @@ app.register_blueprint(web)
 
 # app.register_blueprint(webhook)
 # csrf.exempt(webhook)
+

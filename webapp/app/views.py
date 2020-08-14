@@ -1,4 +1,5 @@
 """Defines the home page route"""
+from datetime import datetime
 
 from flask import render_template, url_for, redirect, Blueprint, jsonify
 from loguru import logger
@@ -9,7 +10,7 @@ core = Blueprint("core", __name__, template_folder='templates')
 @core.route("/")
 def index():
     # return render_template("home.html", title="Home - Python Code Examples")
-    return '<h2>Hello World Algo102</h2>'
+    return f'<h2>Test message at {datetime.now()}</h2>'
 
 
 @core.route("/index")

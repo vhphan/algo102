@@ -6,6 +6,9 @@ import psutil
 
 
 # https://www.ryanbaumann.com/blog/2016/4/30/python-pandas-tosql-only-insert-new-rows
+import talib
+
+
 def clean_df_db_dups(df, tablename, engine, dup_cols=[],
                      filter_continuous_col=None, filter_categorical_col=None):
     """
@@ -84,6 +87,15 @@ def json_zipped_to_dict(file_name):
 
     json_str = json_bytes.decode('utf-8')  # 2. string (i.e. JSON)
     return json.loads(json_str)
+
+
+def get_pattern(df, candle, open_col_name='o', high_col_name='h', low_col_name='l', close_col_name='c'):
+    op = df[open_col_name]
+    hi = df[high_col_name]
+    lo = df[low_col_name]
+    cl = df[close_col_name]
+    candles = getattr(talib, candle)(op, hi, lo, cl)
+    return candles
 
 
 if __name__ == '__main__':

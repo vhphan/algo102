@@ -20,7 +20,7 @@ pg_db = EPortalPGDB.Instance()
 max_workers = 4
 
 ##
-stocks_df = pd.read_csv(f'{APP_PATH}/data/symbols_fin_hubb.csv')
+stocks_df = pd.read_csv(f'{APP_PATH}/screener/finnhub/data/symbols_fin_hubb.csv')
 symbols = stocks_df['symbol'].to_list()
 
 
@@ -83,3 +83,7 @@ if __name__ == '__main__':
 
     for i in res:
         print(str(i))
+
+    # %%
+    symbol = 'DOCU'
+    df = pg_db.query_df(f"SELECT * FROM stocks_finn_hub WHERE symbol='{symbol}'")

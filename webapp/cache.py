@@ -3,5 +3,5 @@ from flask_caching import Cache
 cache = Cache(config={
     "DEBUG": True,  # some Flask specific configs
     "CACHE_TYPE": "simple",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300
+    "CACHE_DEFAULT_TIMEOUT": 60 * 30
 })

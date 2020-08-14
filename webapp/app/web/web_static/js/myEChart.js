@@ -15,6 +15,7 @@ const chartContainer = document.getElementById(chartDiv);
 const tableContainer = document.getElementById('profile-container');
 const selectTopPick = document.getElementById('select-top-picks');
 const selectChartType = document.getElementById('select-chart-type');
+const selectMinMarkerCap = document.getElementById('select-market-cap-min');
 const spinner = document.getElementById('spinner');
 const snackbar = document.getElementById('snackbar');
 const currentUrl = document.location.href
@@ -23,7 +24,7 @@ let mainChart = echarts.init(document.getElementById(chartDiv));
 const aggChart = echarts.init(document.getElementById(pieChartDiv), 'dark');
 const gaugeChart = echarts.init(document.getElementById(gaugeChartDiv), 'dark');
 
-let dates, data, volumes;
+let dates, data, volumes, symbols_details;
 
 // const myBarChart = echarts.init(document.getElementById(barChartDiv));
 function getTheme(theme) {
@@ -51,6 +52,38 @@ function showError(addMsg = '') {
         "  </button>\n" +
         "</div>";
     errorDiv.innerHTML += htmlVal;
+}
+
+
+function removeFadeOut(el, speed) {
+    var seconds = speed / 1000;
+    el.style.transition = "opacity " + seconds + "s ease";
+
+    el.style.opacity = 0;
+    setTimeout(function () {
+        el.parentNode.removeChild(el);
+    }, speed);
+}
+
+
+function showSuccess(addMsg = '') {
+    const errorDiv = document.getElementById('ajax-fail');
+    const htmlVal = "" +
+        "<div id='show-success' class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">\n" +
+        "  <strong>Success!</strong>" + addMsg + "\n" +
+        "  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">\n" +
+        "    <span aria-hidden=\"true\">&times;</span>\n" +
+        "  </button>\n" +
+        "</div>";
+    errorDiv.innerHTML += htmlVal;
+
+    // removeFadeOut(document.getElementById('show-success'), 1500)
+    setTimeout(function () {
+        $("#show-success").alert('close');
+    }, 1500);
+    setTimeout(function () {
+        errorDiv.innerHTML = '';
+    }, 3500);
 }
 
 function clearError() {
@@ -1030,10 +1063,12 @@ function reloadCharts(symbol) {
 }
 
 function loadTopPicks() {
+
     fetch(base_url + '/fh/top-picks')
         .then((r) => r.json())
         .then((response) => {
                 console.log(response);
+                symbols_details = response;
                 response.forEach(function (item, index) {
                     let option = document.createElement("option");
                     option.text = item.symbol;
@@ -1071,6 +1106,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
         drawCandlestickChart(data, dates, symbol, volumes);
     });
+
+
+    selectMinMarkerCap.addEventListener('change', function () {
+        let symbol = selectTopPick.value;
+        let filtered = symbols_details.filter(item => item['marketCapitalization'] >= this.value);
+        console.log(filtered);
+        selectTopPick.innerText = null;
+        filtered.forEach(function (item, index) {
+            let option = document.createElement("option");
+            option.text = item.symbol;
+            option.value = item.symbol;
+            option.selected = index === 0;
+            selectTopPick.add(option);
+        });
+
+        if (filtered[0].symbol !== symbol) {
+            reloadCharts(filtered[0].symbol);
+        }
+        showSuccess('List filtered.')
+    })
     // eventFire(document.getElementById('sidebarCollapse'), 'click');
 
     // let mainDiv = document.getElementById('main')

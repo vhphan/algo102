@@ -12,6 +12,22 @@ def web_index():
     return render_template('dashboard1.html')
 
 
+@web.route('/bbot')
+def binance_bot():
+    # return 'hello web'
+    return render_template('binance_bot.html')
+
+
+@web.route('/pattern')
+def pattern():
+    return render_template('pattern.html')
+
+
 @web.route('/test')
 def web_test():
     return 'hello test'
+
+
+@web.route('/breakout')
+def breakout():
+    return 'hello breakout'

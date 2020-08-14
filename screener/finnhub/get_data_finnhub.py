@@ -6,6 +6,9 @@ import pandas as pd
 import datetime
 from datetime import timezone
 import finnhub
+
+from webapp.cache import cache
+from lib.helpers import get_pattern
 from lib.retry_decorator import Retry
 
 # Configure API key
@@ -15,8 +18,10 @@ from screener.finnhub.initialize import pg_db, finnhub_client
 
 # Set start date and end date
 today = pendulum.today('UTC')
+tomorrow = pendulum.tomorrow('UTC')
 one_year_ago = today.subtract(years=1)
 today_u = today.int_timestamp
+tomorrow_u = tomorrow.int_timestamp
 one_year_ago_u = one_year_ago.int_timestamp
 print(today_u, one_year_ago_u)
 
@@ -41,10 +46,45 @@ def get_stock_data(symbol, start, end, timeframe='D'):
     return None
 
 
+@cache.memoize(timeout=300)
+def get_stock_data_pattern(symbol, start, end, timeframe='D', patterns=[]):
+    print(f'getting {symbol} and pattern')
+
+    if not isinstance(start, int):
+        start = int(start)
+    if not isinstance(end, int):
+        end = int(end)
+    candles_df = get_stock_data(symbol, start, end, timeframe)
+    for candle in patterns:
+        candles_df[candle] = get_pattern(candles_df, candle)
+    return candles_df
+
+
+def get_stock_data_db(symbol, num_months_ago=1):
+    sql = f"""
+    SELECT * FROM stocks_finn_hub 
+        WHERE symbol='{symbol}' and 
+        date>'now'::timestamp - '{num_months_ago} month'::interval order by date;
+    """
+    df = pg_db.query_df(sql)
+    return df
+
+
+def get_symbol_db(min_market_cap=100):
+    sql = f"""
+    SELECT symbol FROM eproject_fx.public.biz_fin WHERE CAST(biz_fin."marketCapitalization" as float)>{min_market_cap}
+        GROUP BY symbol;
+    """
+    df = pg_db.query_df(sql)
+    return df
+
+
 def get_symbols(return_type='dataframe'):
     stocks = finnhub_client.stock_symbols('US')
     stocks_dict = [stock.to_dict() for stock in stocks]
     if return_type == 'dataframe':
+        pd.DataFrame(stocks_dict).to_csv(
+            '/home2/eproject/vee-h-phan.com/algo102/screener/finnhub/data/symbols_fin_hubb.csv', index=False)
         return pd.DataFrame(stocks_dict)
     return stocks_dict
 
@@ -52,6 +92,8 @@ def get_symbols(return_type='dataframe'):
 def get_top_picks():
     df2 = pd.read_csv('/home2/eproject/vee-h-phan.com/algo102/fbprophet/growth_stocks_filtered.csv')
     df2 = df2[df2['condition_1'] & df2['condition_2'] & df2['condition_3']]
+    cols = ['symbol', 'marketCapitalization', '52WeekHigh', "52WeekLow"]
+    df2 = df2[cols]
     return df2.head(100).to_dict(orient='records')
 
 
@@ -89,6 +131,29 @@ def get_aggregate_indicators(symbol, resolution='D'):
     return agg.to_dict();
 
 
+def update_data_db_symbol(symbol):
+    # get last date of symbol in database
+    sql = f"SELECT Max(t) as max_date FROM stocks_finn_hub WHERE symbol='{symbol}'"
+    df_last = pg_db.query_df(sql)
+
+    start = one_year_ago_u
+    if today.day_of_week == 1:
+        min_delta_days = 3 * 24 * 60 * 60
+    else:
+        min_delta_days = 1 * 24 * 60 * 60
+
+    if len(df_last):
+        if df_last.loc[0, 'max_date'] is not None:
+            last_day_in_db = df_last.loc[0, 'max_date']
+            start = last_day_in_db + 1 * 24 * 60 * 60
+
+    if today_u - start > min_delta_days:
+        candles_df = get_stock_data(symbol, start, today_u)
+
+        if candles_df is not None and len(candles_df):
+            pg_db.df_to_db(candles_df, name='stocks_finn_hub', if_exists='append', index=False)
+
+
 def update_data_db():
     # get symbols
     stocks_list = get_symbols()
@@ -120,19 +185,9 @@ def update_data_db():
         #     start_u = one_year_ago
 
         # delay => to not break API Limit
-
-        if i % 1000 == 0 and i > 0:
-            msg = f"<p>completed {i} stocks....</p>"
-            send_eri_mail('phanveehuen@gmail.com', message_=msg, subject='finhubb data progress', message_type='html')
-
         last_slept_at = -1
-        if j % 5 == 0 and j > 0 and j != last_slept_at:
-            print('sleeping for 5 seconds...')
-            time.sleep(5)
-            last_slept_at = j
-
         if today_u - start > min_delta_days:
-            candles_df = get_stock_data(symbol, start, today_u)
+            candles_df = get_stock_data(symbol, start, tomorrow_u)
             j += 1
 
             if candles_df is not None and len(candles_df):
@@ -144,8 +199,17 @@ def update_data_db():
 
                 print(f'finished {i} {symbol}')
                 continue
+        else:
+            print(f'skipping {symbol}')
 
-        print(f'skipping {symbol}')
+        if i % 1000 == 0 and i > 0:
+            msg = f"<p>completed {i} stocks....</p>"
+            send_eri_mail('phanveehuen@gmail.com', message_=msg, subject='finhubb data progress', message_type='html')
+
+        if j % 5 == 0 and j > 0 and j != last_slept_at:
+            print('sleeping for 5 seconds...')
+            time.sleep(5)
+            last_slept_at = j
 
 
 @Retry(tries=3, delay=120)
@@ -177,9 +241,10 @@ def get_news_sentiment(symbol):
 if __name__ == '__main__':
     # update_data_db()
     # r = get_basic_financials('DOCU', 'all')
-    r2 = get_tech_ind('DOCU')
+    # r2 = get_top_picks()
     # pprint(r)
     # pprint(r2)
     # r3 = get_news_sentiment('NETE')
     # pprint(r3)
     # d = get_top_picks()
+    r = get_stock_data('LBJ', one_year_ago_u, today_u)

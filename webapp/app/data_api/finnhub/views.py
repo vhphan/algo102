@@ -8,6 +8,7 @@ from lib.error_decorator import safe_run
 from screener.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, get_company_profile, \
     get_recommendation_trends, get_aggregate_indicators, get_tech_ind
 from cache import cache
+from screener.general.breakout import get_breakout_symbols_db
 
 fh = Blueprint("fh", __name__, url_prefix='/fh')
 
@@ -46,6 +47,16 @@ def fh_symbols():
 @cache.memoize(timeout=300)
 def tech_ind(symbol, indicator, start, end, timeframe):
     return jsonify(get_tech_ind(symbol, indicator=indicator))
+
+
+breakout_default = dict(window_percentage=2, window_length=15, min_market_cap=100)
+
+
+@fh.route("/breakouts",defaults=breakout_default)
+@fh.route("/breakouts/<window_percentage>/<window_length>/<min_market_cap>")
+def breakouts(window_percentage, window_length, min_market_cap):
+    df = get_breakout_symbols_db(window_percentage, window_length, min_market_cap)
+    return df.to_json(orient='records')
 
 
 @fh.route('/top-picks')

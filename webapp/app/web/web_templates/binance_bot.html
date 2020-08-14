@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Crypto Bot</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/web/web_static/css/dashboard0.css?version=1">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+            integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+            crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+            integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+            crossorigin="anonymous"></script>
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/web/web_static/assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/web/web_static/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/web/web_static/assets/favicon-16x16.png">
+    <link rel="manifest" href="/web/web_static/assets/site.webmanifest">
+
+
+</head>
+
+<body>
+<!--        spinner/loader -->
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="width: 48px">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </div>
+    </div>
+</div>
+<!-- End of spinner/loader -->
+
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar" class="sticky-top">
+
+        <div class="sidebar-header sticky-top">
+            <h3>Crypto Trading Bot<sup></sup></h3>
+        </div>
+
+        <!--        navigation normal-->
+        <ul class="list-unstyled components sticky-top">
+            <li class="active">
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="true"
+                   class="dropdown-toggle">Work in Progress</a>
+                <ul class="collapse list-unstyled show" id="homeSubmenu">
+
+                    <li>
+                        <a href="#content" id="section1">Main</a>
+                    </li>
+
+                    <li>
+                        <a href="#about-content" id="section3">About</a>
+                    </li>
+
+                </ul>
+            </li>
+
+        </ul>
+
+    </nav>
+
+    <!-- Page Content Holder (includes top nav)-->
+    <div id="content" class="">
+        <!--        top navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+            <div class="container-fluid text-white">
+
+                <button type="button" id="sidebarCollapse" class="navbar-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <span class="mx-auto"><h5 id="current-page" class="pt-2"> Crypto Trading Bot  </h5>
+</span>
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+
+            </div>
+        </nav>
+
+        <div id="spinner"
+             style="font-size: 36px; width: 10rem; height: 10rem; margin-left:10px; position: absolute; z-index: 10;">
+        </div>
+
+
+        <div id="alert-message">
+
+        </div>
+
+
+        <div id="selectedContent" class="container-fluid">
+            <div class="row" id="main">
+                <div class="col-md-12" id="main-chart"></div>
+            </div>
+            <div class="col-12 mt-5 p-5 mb-5" id="about-content">
+                <h5>About</h5>
+                <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
+                <p>Objectives:</p>
+                <ol>
+                    <li>Educational purpose (Especially my own).</li>
+                    <li>As a simple app to add to my coding portfolio.</li>
+                    <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or
+                        investment advice.</em></li>
+                </ol>
+
+                <div style="height: 300px"></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            $(this).toggleClass('active');
+        });
+    });
+</script>
+<!--<script src="/static/js/dashboard0.js?version=1"></script>-->
+
+<!--😇-->
+<!--😍-->
+
+<!--<script src="/static/js/my_chart.js"></script>-->
+<script src="/web/web_static/js/echarts.min.js"></script>
+<script src="/web/web_static/js/bb.js"></script>
+
+</body>
+<script type="text/javascript">
+    // function zoom() {
+    //     // document.body.style.zoom = "85%";
+    //     let selectedContent = document.getElementById('selectedContent');
+    //     selectedContent.style.zoom = "82%";
+    //
+    // }
+</script>
+
+
