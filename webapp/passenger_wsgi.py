@@ -15,7 +15,7 @@ sys.path.extend([
 ])
 
 if __name__ == "__main__":
-    application.run()
+    application.run(debug=True)
     # Set this application constants here
     # with application.app_context():
     #     pass

@@ -2,6 +2,8 @@ from flask import Flask, session
 from flask_wtf.csrf import CSRFProtect
 from loguru import logger
 
+from data_api.binance.views import bb
+from my_flask_mail import mail
 from .data_api.finnhub import fh
 from .web import web
 from .initialize import APP_PATH, today_str
@@ -21,7 +23,10 @@ cache.init_app(app)
 app.register_blueprint(core)
 app.register_blueprint(fh)
 app.register_blueprint(web)
+app.register_blueprint(bb)
 
 # app.register_blueprint(webhook)
 # csrf.exempt(webhook)
 
+#flask mail
+mail.init_app(app)

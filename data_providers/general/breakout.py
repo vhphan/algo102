@@ -2,8 +2,8 @@ from pprint import pprint
 
 import pandas as pd
 
-from screener.finnhub.get_data_finnhub import get_stock_data_db, get_symbol_db
-from screener.finnhub.initialize import pg_db
+from data_providers.finnhub.get_data_finnhub import get_stock_data_db, get_symbol_db
+from data_providers.finnhub.initialize import pg_db
 
 
 def is_consolidating(dataframe, window_percentage=2, window_length=15):
@@ -62,12 +62,14 @@ def get_breakout_symbols_db(window_percentage=2, window_length=15, min_market_ca
     df1 = pg_db.query_df(sql1)
     df1 = df1[df1['min_max_ratio'] >= (1 - window_percentage / 100)]
     sql2 = f"""
-            SELECT r.symbol, r.c FROM
+            SELECT r.c, biz_fin.* FROM
 (SELECT stocks_finn_hub.*,
         rank() OVER (
             PARTITION BY symbol
             ORDER BY date DESC)
-FROM stocks_finn_hub) r WHERE RANK = 1
+FROM stocks_finn_hub) r 
+INNER JOIN biz_fin USING (symbol)
+WHERE RANK = 1
             """
     df2 = pg_db.query_df(sql2)
 

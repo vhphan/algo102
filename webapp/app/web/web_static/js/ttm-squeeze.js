@@ -25,8 +25,6 @@ const aggChart = echarts.init(document.getElementById(pieChartDiv), 'dark');
 const gaugeChart = echarts.init(document.getElementById(gaugeChartDiv), 'dark');
 
 let dates, data, volumes, symbols_details;
-
-
 const base_url = getBaseURL(currentUrl);
 
 
@@ -40,14 +38,36 @@ new ResizeObserver(entries => {
 
 }).observe(chartContainer);
 
+function ttmloadChartData(symbol) {
+
+}
+
+function ttmReloadCharts(symbol) {
+    ttmloadChartData(symbol);
+    // ttmloadAggregateIndicators(symbol)
+    // ttmloadSymbolProfile(symbol)
+}
+
+
+function ttmLoadTopPicks() {
+    fetch(base_url + '/bb/squeeze-list')
+        .then((r) => r.json())
+        .then((response) => {
+                console.log(response);
+                symbols_details = response;
+                add_symbol_to_list(response);
+
+                // ttmReloadCharts(response[0].symbol);
+            }
+        ).catch(error => {
+        console.log(error);
+
+    });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
-    loadTopPicks();
-//    change ticker event
-//     selectTopPick.onchange(function (e) {
-//         console.log(e);
-//         console.log(this.value);
-//     });
+    ttmLoadTopPicks();
+
     selectTopPick.addEventListener('change', function () {
         console.log('You selected: ', this.value);
         reloadCharts(this.value);
@@ -58,51 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
         mainChart.dispose();
         mainChart = echarts.init(document.getElementById(chartDiv), 'light')
 
-        drawCandlestickChart(data, dates, symbol, volumes);
+        // drawCandlestickChart(data, dates, symbol, volumes);
     });
 
 
-    selectMinMarkerCap.addEventListener('change', function () {
-        let symbol = selectTopPick.value;
-        let filtered = symbols_details.filter(item => item['marketCapitalization'] >= this.value);
-        console.log(filtered);
-        selectTopPick.innerText = null;
-        filtered.forEach(function (item, index) {
-            let option = document.createElement("option");
-            option.text = item.symbol;
-            option.value = item.symbol;
-            option.selected = index === 0;
-            selectTopPick.add(option);
-        });
-
-        if (filtered[0].symbol !== symbol) {
-            reloadCharts(filtered[0].symbol);
-        }
-        showSuccess('List filtered.')
-    })
-    // eventFire(document.getElementById('sidebarCollapse'), 'click');
-
-    // let mainDiv = document.getElementById('main')
-    // let indicatorsDiv = document.getElementById('indicators')
-    // let aboutDiv = document.getElementById('about-content')
-    //
-    // document.getElementById('section1').addEventListener('click', (e) => {
-    //     e.preventDefault();
-    //     mainDiv.scrollIntoView();
-    // });
-    // document.getElementById('section2').addEventListener('click', (e) => {
-    //     e.preventDefault();
-    //     indicatorsDiv.scrollIntoView();
-    // });
-    // document.getElementById('section3').addEventListener('click', (e) => {
-    //     e.preventDefault();
-    //     aboutDiv.scrollIntoView();
-    // });
 
 
 });
 
-(function () {
-
-
-})();

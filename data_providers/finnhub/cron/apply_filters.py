@@ -7,9 +7,9 @@ import pandas as pd
 
 from lib.helpers import dict_to_json_zipped
 from lib.my_email import send_eri_mail
-from screener.alphavantage.get_data_alphavantage import get_company_overview, get_tech_ind
-from screener.finnhub.get_data_finnhub import get_symbols, get_basic_financials
-from screener.finnhub.initialize import pg_db, finnhub_client
+from data_providers.alphavantage.get_data_alphavantage import get_company_overview, get_tech_ind
+from data_providers.finnhub.get_data_finnhub import get_symbols, get_basic_financials
+from data_providers.finnhub.initialize import pg_db, finnhub_client
 
 
 # The current price > SMA50 > SMA150 > SMA200
@@ -81,7 +81,7 @@ def apply_the_filters(start_row=0, use_forecast=False, pc_higher_sp=10, min_to_5
 
         try:
             bs = get_basic_financials(symbol, 'price')
-            data_folder = '/home2/eproject/vee-h-phan.com/algo102/screener/finnhub/data'
+            data_folder = '/home2/eproject/vee-h-phan.com/algo102/data_providers/finnhub/data'
             dict_to_json_zipped(bs, f'{data_folder}/bs_{symbol}.json.gzip')
 
         except Exception as e:
@@ -128,7 +128,7 @@ def apply_the_filters(start_row=0, use_forecast=False, pc_higher_sp=10, min_to_5
             print(df.loc[i])
 
         if i % 1000 == 0 and i > 0:
-            df.to_csv(f'/home2/eproject/vee-h-phan.com/algo102/screener/finnhub/data/growth_stocks_filtered_{i}.csv',
+            df.to_csv(f'/home2/eproject/vee-h-phan.com/algo102/data_providers/finnhub/data/growth_stocks_filtered_{i}.csv',
                       index=False)
         if i % 100 == 0 and i > 0:
             send_eri_mail('phanveehuen@gmail.com', f'processed {i} symbols', 'finhubb progress: bs')
@@ -136,7 +136,7 @@ def apply_the_filters(start_row=0, use_forecast=False, pc_higher_sp=10, min_to_5
     df_metric = pd.concat(df_metric_list)
     final_df_filtered = pd.concat([df, df_metric], axis=1)
     final_df_filtered.to_csv(
-        '/home2/eproject/vee-h-phan.com/algo102/screener/finnhub/data/growth_stocks_filtered.csv', index=False)
+        '/home2/eproject/vee-h-phan.com/algo102/data_providers/finnhub/data/growth_stocks_filtered.csv', index=False)
     pg_db.df_to_db(final_df_filtered, name='biz_fin', if_exists='replace', index=False)
 
 

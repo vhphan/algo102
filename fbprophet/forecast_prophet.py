@@ -20,7 +20,7 @@ pg_db = EPortalPGDB.Instance()
 max_workers = 4
 
 ##
-stocks_df = pd.read_csv(f'{APP_PATH}/screener/finnhub/data/symbols_fin_hubb.csv')
+stocks_df = pd.read_csv(f'{APP_PATH}/data_providers/finnhub/data/symbols_fin_hubb.csv')
 symbols = stocks_df['symbol'].to_list()
 
 

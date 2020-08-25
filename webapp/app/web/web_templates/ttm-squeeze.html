@@ -21,7 +21,16 @@
             crossorigin="anonymous"></script>
 
 
+    <!--    JS Grid-->
+    <!--    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css"/>-->
+    <!--    <link type="text/css" rel="stylesheet"-->
+    <!--          href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css"/>-->
 
+    <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.15.6/metricsgraphics.css">-->
+    <!--    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
+
+    <!--    <script src="https://code.highcharts.com/highcharts.js" ></script >-->
+    <!--    <script src="https://code.highcharts.com/modules/data.js" ></script >-->
     <link rel="apple-touch-icon" sizes="180x180" href="/web/web_static/assets/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/web/web_static/assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/web/web_static/assets/favicon-16x16.png">
@@ -188,17 +197,18 @@
                 <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
                 <p>Objectives:</p>
                 <ol>
-                    <li>My own educational purpose.</li>
-                    <li>As part of my coding portfolio.</li>
+                    <li>Educational purpose (Especially my own).</li>
+                    <li>As a simple app to add to my coding portfolio.</li>
                     <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or
                         investment advice.</em></li>
                 </ol>
-                <p></p>
-                <h6></h6>
+                <p>Simple stock data_providers. The stocks are filtered from 8000+ stocks traded in the US.</p>
+                <h6>data_providers criterias:</h6>
                 <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                    <li>The current price > SMA50 > SMA150 > SMA200</li>
+                    <li>The current price must be at least 30% above the 52 week low.</li>
+                    <li>The current price must be within 25% of the 52 week high.</li>
+                    <li>price_relative_to_SP500 for 4, 13, 26 weeks > 30%</li>
 
                 </ul>
                 <p>
@@ -206,6 +216,9 @@
                 </p>
                 <ul>
                     <li><a href="https://finnhub.io/docs/api">Finhubb financial API</a></li>
+<!--                    <li>-->
+<!--                        <a href="https://facebook.github.io/prophet/">Facebook Prophet library (Python)</a>-->
+<!--                    </li>-->
                     <li>
                         <a href="https://echarts.apache.org/en/index.html">ECharts.js</a>
                     </li>
@@ -215,6 +228,7 @@
                     <li>
                         Bootstrap 4 CSS Framework.
                     </li>
+
                 </ul>
                 <div style="height: 300px"></div>
 
@@ -255,7 +269,7 @@
 <!--<script src="/static/js/my_chart.js"></script>-->
 <script src="/web/web_static/js/echarts.min.js"></script>
 <script src="/web/web_static/js/functions.js"></script>
-<script src="/web/web_static/js/breakout.js"></script>
+<script src="/web/web_static/js/ttm-squeeze.js"></script>
 
 </body>
 <script type="text/javascript">

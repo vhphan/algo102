@@ -6,8 +6,8 @@ import talib
 ##
 from lib.helpers import get_pattern
 from lib.postgres_db import EPortalPGDB
-from screener.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_stock_data_db
-from screener.references.pattern_names import candlestick_patterns
+from data_providers.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_stock_data_db
+from data_providers.references.pattern_names import candlestick_patterns
 
 # %%
 APP_PATH = '/home/eproject/veehuen/python/algo102'

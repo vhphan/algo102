@@ -12,6 +12,11 @@ def web_index():
     return render_template('dashboard1.html')
 
 
+@web.route('/ttm-squeeze')
+def ttm_squeeze():
+    return render_template('ttm-squeeze.html')
+
+
 @web.route('/bbot')
 def binance_bot():
     # return 'hello web'
@@ -30,4 +35,4 @@ def web_test():
 
 @web.route('/breakout')
 def breakout():
-    return 'hello breakout'
+    return render_template('breakout.html')

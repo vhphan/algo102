@@ -5,10 +5,10 @@ from flask import Blueprint, jsonify
 import sys
 
 from lib.error_decorator import safe_run
-from screener.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, get_company_profile, \
+from data_providers.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, get_company_profile, \
     get_recommendation_trends, get_aggregate_indicators, get_tech_ind
 from cache import cache
-from screener.general.breakout import get_breakout_symbols_db
+from data_providers.general.breakout import get_breakout_symbols_db
 
 fh = Blueprint("fh", __name__, url_prefix='/fh')
 

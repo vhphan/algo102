@@ -14,7 +14,7 @@ from lib.retry_decorator import Retry
 # Configure API key
 from lib.my_email import send_eri_mail
 from lib.retry_decorator import Retry
-from screener.finnhub.initialize import pg_db, finnhub_client
+from data_providers.finnhub.initialize import pg_db, finnhub_client
 
 # Set start date and end date
 today = pendulum.today('UTC')
@@ -84,7 +84,7 @@ def get_symbols(return_type='dataframe'):
     stocks_dict = [stock.to_dict() for stock in stocks]
     if return_type == 'dataframe':
         pd.DataFrame(stocks_dict).to_csv(
-            '/home2/eproject/vee-h-phan.com/algo102/screener/finnhub/data/symbols_fin_hubb.csv', index=False)
+            '/home2/eproject/vee-h-phan.com/algo102/data_providers/finnhub/data/symbols_fin_hubb.csv', index=False)
         return pd.DataFrame(stocks_dict)
     return stocks_dict
 
@@ -160,6 +160,8 @@ def update_data_db():
     stocks_df = pd.DataFrame(stocks_list)
     # for i, symbol in enumerate(['GOOG', 'AAPL', ]):
     j = 0
+    last_slept_at = -1
+
     for i, symbol in enumerate(stocks_df['symbol']):
 
         # get last date of symbol in database
@@ -185,10 +187,17 @@ def update_data_db():
         #     start_u = one_year_ago
 
         # delay => to not break API Limit
-        last_slept_at = -1
         if today_u - start > min_delta_days:
             candles_df = get_stock_data(symbol, start, tomorrow_u)
+            # print('sleeping 1 second')
+            # time.sleep(1)
             j += 1
+            print(f"j={j}")
+
+            if j % 5 == 0 and j > 0 and j != last_slept_at:
+                print('sleeping for 5 seconds...')
+                time.sleep(5)
+                last_slept_at = j
 
             if candles_df is not None and len(candles_df):
                 try:
@@ -205,11 +214,6 @@ def update_data_db():
         if i % 1000 == 0 and i > 0:
             msg = f"<p>completed {i} stocks....</p>"
             send_eri_mail('phanveehuen@gmail.com', message_=msg, subject='finhubb data progress', message_type='html')
-
-        if j % 5 == 0 and j > 0 and j != last_slept_at:
-            print('sleeping for 5 seconds...')
-            time.sleep(5)
-            last_slept_at = j
 
 
 @Retry(tries=3, delay=120)
@@ -247,4 +251,5 @@ if __name__ == '__main__':
     # r3 = get_news_sentiment('NETE')
     # pprint(r3)
     # d = get_top_picks()
-    r = get_stock_data('LBJ', one_year_ago_u, today_u)
+    # r = get_stock_data('LBJ', one_year_ago_u, today_u)
+    r = get_aggregate_indicators('DOCU')
