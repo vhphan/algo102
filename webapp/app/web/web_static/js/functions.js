@@ -86,6 +86,22 @@ function calculateMA(dayCount, data) {
     return result;
 }
 
+function calculateBollingerUpper(dayCount, data) {
+    let result = [];
+    for (let i = 0, len = data.length; i < len; i++) {
+        if (i < dayCount) {
+            result.push('-');
+            continue;
+        }
+        var sum = 0;
+        for (var j = 0; j < dayCount; j++) {
+            sum += data[i - j][1];
+        }
+        result.push((sum / dayCount).toFixed(2));
+    }
+    return result;
+}
+
 function barChart(rawData0) {
     // rawData = rawData0.reverse().slice(0, 11);
     rawData = rawData0.reverse();
@@ -194,11 +210,11 @@ function barChart(rawData0) {
 
 }
 
-function drawCandlestickChart(data, dates, symbol, volumes) {
-    const dataMA10 = calculateMA(10, data);
-    const dataMA20 = calculateMA(20, data);
-    const dataMA50 = calculateMA(50, data);
-    const dataMA100 = calculateMA(100, data);
+function drawCandlestickChart(data, dates, symbol, volumes, indicatorsData = [], add_ma = true) {
+    // const dataMA10 = calculateMA(10, data);
+    // const dataMA20 = calculateMA(20, data);
+    // const dataMA50 = calculateMA(50, data);
+    // const dataMA100 = calculateMA(100, data);
     const windows = [10, 20, 50, 100]
     let dataMA = [];
     let dataNameMA = []
@@ -235,11 +251,14 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
         ]
     }
 
-
+    let legendData = [symbol];
+    if (add_ma) {
+        legendData = [...legendData, ...dataNameMA];
+    }
     let option1 = {
             backgroundColor: '#000',
             legend: {
-                data: [symbol].concat(dataNameMA),
+                data: legendData,
                 inactiveColor: '#777',
                 textStyle: {
                     color: '#fff'
@@ -257,50 +276,55 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
                     }
                 }
             },
-            xAxis: {
+            xAxis: [{
                 type: 'category',
                 data: dates,
                 axisLine: {lineStyle: {color: '#8392A5'}}
-            },
-            yAxis: {
+            }],
+            yAxis: [{
                 scale: true,
                 axisLine: {lineStyle: {color: '#8392A5'}},
                 splitLine: {show: false}
-            },
-            grid: {
-                bottom: 80,
+            }],
+            grid: [{
                 left: '3%',
-                right: '3%'
-            },
-            dataZoom: [{
-                textStyle: {
-                    color: '#8392A5'
-                },
-                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-                handleSize: '80%',
-                dataBackground: {
-                    areaStyle: {
+                right: '1%',
+                height: '57%'
+            }],
+            dataZoom: [
+                {
+                    xAxisIndex: [0],
+                    textStyle: {
                         color: '#8392A5'
                     },
-                    lineStyle: {
-                        opacity: 0.8,
-                        color: '#8392A5'
-                    }
+                    handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                    handleSize: '80%',
+                    dataBackground: {
+                        areaStyle: {
+                            color: '#8392A5'
+                        },
+                        lineStyle: {
+                            opacity: 0.8,
+                            color: '#8392A5'
+                        }
+                    },
+                    handleStyle: {
+                        color: '#fff',
+                        shadowBlur: 3,
+                        shadowColor: 'rgba(0, 0, 0, 0.6)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2
+                    },
+                    start: 50,
+                    end: 100,
+                    top: '93%'
                 },
-                handleStyle: {
-                    color: '#fff',
-                    shadowBlur: 3,
-                    shadowColor: 'rgba(0, 0, 0, 0.6)',
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 2
-                },
-                start: 50,
-                end: 100
-            }, {
-                type: 'inside',
-                start: 50,
-                end: 100
-            }],
+                {
+                    xAxisIndex: [0],
+                    type: 'inside',
+                    start: 50,
+                    end: 100
+                }],
             animation: false,
             series: [
 
@@ -315,47 +339,7 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
                         borderColor0: '#FD1050'
                     }
                 },
-                {
-                    name: dataNameMA[0],
-                    type: 'line',
-                    data: dataMA[0],
-                    smooth: true,
-                    showSymbol: false,
-                    lineStyle: {
-                        width: 1
-                    }
-                },
-                {
-                    name: dataNameMA[1],
-                    type: 'line',
-                    data: dataMA[1],
-                    smooth: true,
-                    showSymbol: false,
-                    lineStyle: {
-                        width: 1
-                    }
-                },
-                {
-                    name: dataNameMA[2],
-                    type: 'line',
-                    data: dataMA[2],
-                    smooth: true,
-                    showSymbol: false,
-                    lineStyle: {
-                        width: 1
-                    }
-                },
-                {
-                    name: dataNameMA[3],
-                    type: 'line',
-                    data: dataMA[3],
-                    smooth: true,
-                    showSymbol: false,
-                    lineStyle: {
-                        width: 1
-                    },
 
-                }
             ]
         }
     ;
@@ -370,9 +354,8 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
         backgroundColor: '#000',
         animation: false,
         legend: {
-            bottom: 10,
             left: 'center',
-            data: [symbol].concat(dataNameMA),
+            data: legendData,
             textStyle: {color: '#fff'}
         },
         tooltip: {
@@ -432,14 +415,13 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
         grid: [
             {
                 left: '3%',
-                right: '3%',
-                height: '50%',
-            },
-            {
+                right: '1%',
+                height: '50%'
+            }, {
                 left: '3%',
-                right: '3%',
-                top: '63%',
-                height: '16%',
+                right: '1%',
+                top: '57%',
+                height: '10%'
             }
         ],
         xAxis: [
@@ -518,7 +500,7 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
                 show: true,
                 xAxisIndex: [0, 1],
                 type: 'slider',
-                top: '85%',
+                top: '93%',
                 start: 50,
                 end: 100
             }
@@ -538,65 +520,198 @@ function drawCandlestickChart(data, dates, symbol, volumes) {
                     }
                 },
             },
-            {
-                name: dataNameMA[0],
-                type: 'line',
-                data: dataMA[0],
-                showSymbol: false,
-                smooth: true,
-                lineStyle: {
-                    width: 1
-                }
-            },
-            {
-                name: dataNameMA[1],
-                type: 'line',
-                data: dataMA[1],
-                showSymbol: false,
-                smooth: true,
-                lineStyle: {
-                    width: 1
 
-                }
-            },
-            {
-                name: dataNameMA[2],
-                type: 'line',
-                data: dataMA[2],
-                showSymbol: false,
-                smooth: true,
-                lineStyle: {
-                    width: 1
-
-
-                }
-            },
-            {
-                name: dataNameMA[3],
-                type: 'line',
-                data: dataMA[3],
-                showSymbol: false,
-                smooth: true,
-                lineStyle: {
-                    width: 1
-
-                }
-            },
             {
                 name: 'Volume',
                 type: 'bar',
                 xAxisIndex: 1,
                 yAxisIndex: 1,
-                data: volumes2
+                data: volumes2,
+                itemStyle: {
+                    normal: {
+                        color: function (params) {
+                            let colorList;
+                            if (data[params.dataIndex][1] > data[params.dataIndex][0]) {
+                                colorList = '#ef232a';
+                            } else {
+                                colorList = '#14b143';
+                            }
+                            return colorList;
+                        },
+                    }
+                }
             }
         ]
     };
     let chartOptions = [option1, option2]
     option = chartOptions[parseInt(selectChartType.value) - 1];
+    let ma_options = [
+        {
+            name: dataNameMA[0],
+            type: 'line',
+            data: dataMA[0],
+            showSymbol: false,
+            smooth: true,
+            lineStyle: {
+                width: 1
+            }
+        },
+        {
+            name: dataNameMA[1],
+            type: 'line',
+            data: dataMA[1],
+            showSymbol: false,
+            smooth: true,
+            lineStyle: {
+                width: 1
 
-    if (breakoutMax === undefined) {
-        option['series'][0]["markArea"] = m;
+            }
+        },
+        {
+            name: dataNameMA[2],
+            type: 'line',
+            data: dataMA[2],
+            showSymbol: false,
+            smooth: true,
+            lineStyle: {
+                width: 1
+
+
+            }
+        },
+        {
+            name: dataNameMA[3],
+            type: 'line',
+            data: dataMA[3],
+            showSymbol: false,
+            smooth: true,
+            lineStyle: {
+                width: 1
+
+            }
+        },]
+    if (add_ma) {
+        ma_options.forEach(((ma_option, index) => {
+            option.series.push(
+                ma_option
+            );
+        }));
     }
+    // if (breakoutMax === undefined) {
+    //     option['series'][0]["markArea"] = m;
+    // }
+    if (indicatorsData.length) {
+        indicatorsData.forEach((indicator, i) => {
+                if (indicator.name === 'ttm') {
+                    let listOfData = indicator.data;
+                    let seriesNames = indicator.seriesNames;
+                    let colors = indicator.colors;
+                    listOfData.forEach((d, j) => {
+                        if (seriesNames[j] === 'momentum') {
+
+                            for (let k = 0; k < option.dataZoom.length; k++) {
+                                option.dataZoom[k].xAxisIndex.push((selectChartType.value === '1' ? 1 : 2))
+                            }
+
+
+                            option.grid.push(
+                                {
+                                    left: '3%',
+                                    right: '1%',
+                                    top: '79%',
+                                    height: '14%'
+                                }
+                            );
+
+
+                            option.xAxis.push(
+                                {
+                                    type: 'category',
+                                    gridIndex: (selectChartType.value === '1' ? 1 : 2),
+                                    data: dates,
+                                    axisLabel: {show: false}
+                                }
+                            );
+                            option.yAxis.push(
+                                {
+                                    gridIndex: (selectChartType.value === '1' ? 1 : 2),
+                                    axisLine: {onZero: false},
+                                    axisTick: {show: false},
+                                    splitLine: {show: false},
+                                    axisLabel: {show: false}
+                                }
+                            );
+                            option.series.push(
+                                {
+                                    name: seriesNames[j],
+                                    type: 'bar',
+                                    xAxisIndex: (selectChartType.value === '1' ? 1 : 2),
+                                    yAxisIndex: (selectChartType.value === '1' ? 1 : 2),
+                                    data: d,
+                                    itemStyle: {
+                                        normal: {
+
+                                            //from pinescript
+                                            // https://www.tradingview.com/script/nqQ1DT5a-Squeeze-Momentum-Indicator-LazyBear/#chart-view-comments
+                                            // bcolor = iff( val > 0,
+                                            //             iff( val > nz(val[1]), lime, green),
+                                            //             iff( val < nz(val[1]), red, maroon))
+
+                                            //linearRegression[params.dataIndex-1]
+                                            color: function (params) {
+                                                let colorList;
+                                                if (params.data >= 0) {
+                                                    if (params.data > linearRegression[params.dataIndex - 1]) {
+                                                        colorList = '#9df801';
+                                                    } else {
+                                                        colorList = '#14b143'
+                                                    }
+                                                } else {
+                                                    if (params.data < linearRegression[params.dataIndex - 1]) {
+                                                        colorList = '#ef232a';
+                                                    } else {
+                                                        colorList = '#740308';
+                                                    }
+                                                }
+                                                return colorList;
+                                            },
+                                        }
+
+                                    }
+                                }
+                            );
+                        } else {
+
+                            option.series.push(
+                                {
+                                    "name": seriesNames[j],
+                                    "type": "line",
+                                    "data": d,
+                                    "smooth": true,
+                                    "showSymbol": false,
+                                    "color": colors[j],
+
+                                    "lineStyle": {
+                                        "normal": {
+                                            "opacity": 1,
+                                        }
+                                    }
+                                }
+                            );
+                            option.legend.data = [...option.legend.data, seriesNames[j]]
+
+                        }
+
+
+                    })
+
+
+                }
+            }
+        )
+        ;
+    }
+
 
     mainChart.setOption(option);
 

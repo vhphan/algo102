@@ -5,6 +5,8 @@ from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from private.keys import FLASK_MAIL_PASSWORD
+
 MY_ADDRESS = 'eri_portal@eprojecttrackers.com'
 
 
@@ -19,7 +21,7 @@ def send_eri_mail(recipient, message_, subject="This is TEST", message_type='htm
     msg.attach(MIMEText(message_, message_type))
     # send
     with smtplib.SMTP_SSL(host='mail.eprojecttrackers.com', port=465) as s:
-        s.login(MY_ADDRESS, 'DR1769z750ib')
+        s.login(MY_ADDRESS, FLASK_MAIL_PASSWORD)
         s.send_message(msg, MY_ADDRESS, recipient)
 
 

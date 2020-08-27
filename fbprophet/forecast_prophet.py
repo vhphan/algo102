@@ -11,9 +11,9 @@ from fbprophet import Prophet
 APP_PATH = '/home/eproject/veehuen/python/algo102'
 sys.path.append(APP_PATH)
 sys.path.append(f"{APP_PATH}/lib")
-from postgres_db import EPortalPGDB
-from my_email import send_eri_mail
-from error_decorator import safe_run
+from lib.postgres_db import EPortalPGDB
+from lib.my_email import send_eri_mail
+from lib.error_decorator import safe_run
 
 
 pg_db = EPortalPGDB.Instance()

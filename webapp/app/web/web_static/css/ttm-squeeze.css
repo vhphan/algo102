@@ -1,0 +1,562 @@
+/*
+    DEMO STYLE
+*/
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    /*background: #fafafa;*/
+    background-color: black;
+    color: white;
+}
+
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 5px 5px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    perspective: 1500px;
+
+}
+
+
+#sidebar {
+
+    min-width: 300px;
+    max-width: 300px;
+    background: #000000;
+    color: #fff;
+    transition: all 0.6s cubic-bezier(0.945, 0.020, 0.270, 0.665);
+    transform-origin: bottom left;
+    border: solid 2px white;
+
+}
+
+#sidebar.active {
+    margin-left: -300px;
+    transform: rotateY(100deg);
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #282828;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a.active {
+    text-decoration: underline;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: red;
+}
+
+#sidebar ul li a:hover {
+    color: #282828;
+    background: #fff;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #282828;
+    text-decoration: underline;
+}
+
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #282828;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article, a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+#content {
+    width: 100%;
+    padding: 5px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+#sidebarCollapse {
+    width: 40px;
+    height: 40px;
+    background: #f5f5f5;
+    cursor: pointer;
+}
+
+#sidebarCollapse span {
+    width: 80%;
+    height: 2px;
+    margin: 0 auto;
+    display: block;
+    background: #555;
+    transition: all 0.8s cubic-bezier(0.810, -0.330, 0.345, 1.375);
+    transition-delay: 0.2s;
+}
+
+#sidebarCollapse span:first-of-type {
+    transform: rotate(45deg) translate(2px, 2px);
+}
+
+#sidebarCollapse span:nth-of-type(2) {
+    opacity: 0;
+}
+
+#sidebarCollapse span:last-of-type {
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+
+
+#sidebarCollapse.active span {
+    transform: none;
+    opacity: 1;
+    margin: 5px auto;
+}
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+        transform: rotateY(90deg);
+        height: 100vh;
+    }
+
+    #sidebar.active {
+        margin-left: 0;
+        transform: none;
+    }
+
+    #sidebarCollapse span:first-of-type,
+    #sidebarCollapse span:nth-of-type(2),
+    #sidebarCollapse span:last-of-type {
+        transform: none;
+        opacity: 1;
+        margin: 5px auto;
+    }
+
+    #sidebarCollapse.active span {
+        margin: 0 auto;
+    }
+
+    #sidebarCollapse.active span:first-of-type {
+        transform: rotate(45deg) translate(2px, 2px);
+    }
+
+    #sidebarCollapse.active span:nth-of-type(2) {
+        opacity: 0;
+    }
+
+    #sidebarCollapse.active span:last-of-type {
+        transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+}
+
+
+/*Tree View*/
+ul.tree li {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.tree li ul {
+    display: none;
+}
+
+ul.tree li.open > ul {
+    display: block;
+}
+
+ul.tree li a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+ul.tree li a:before {
+    height: 1em;
+    padding: 0 .1em;
+    font-size: 1.1em;
+    display: block;
+    position: absolute;
+    left: -1.3em;
+    /*top: .2em;*/
+}
+
+ul.tree li > a:not(:last-child):before {
+    content: '+';
+    /*font-family: FontAwesome;*/
+    /*content: "\f65e";*/
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-size: 1.1em;
+
+}
+
+ul.tree li.open > a:not(:last-child):before {
+    content: '-';
+    /*font-family: FontAwesome;*/
+    /*content: "\f65d";*/
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-size: 1.1em;
+}
+
+/*End of Tree View*/
+
+/*Snack bar*/
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+   However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+/*End of Snack Bar*/
+
+
+/*Input box autocomplete*/
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: DodgerBlue !important;
+    color: #ffffff;
+}
+
+/*End of Input box autocomplete*/
+
+/*jQuery UI Dialog*/
+#dialog {
+    background: white;
+}
+
+/*End of jQuery UI Dialog*/
+
+/*spinner*/
+.bd-example-modal-lg .modal-dialog {
+    z-index: 999;
+    position: fixed;
+    left: 50%;
+    top: 5%;
+}
+
+.bd-example-modal-lg .modal-dialog .modal-content {
+    background-color: transparent;
+    border: none;
+}
+
+/*end of spinner*/
+
+
+/*top scroll bar*/
+.wrapper1, .wrapper2 {
+    width: 300px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.wrapper1 {
+    height: 20px;
+}
+
+.wrapper2 {
+    height: 200px;
+}
+
+.div1 {
+    width: 1000px;
+    height: 20px;
+}
+
+.div2 {
+    width: 1000px;
+    height: 200px;
+    background-color: #88FF88;
+    overflow: auto;
+}
+
+/*end of top scroll bar*/
+
+
+/*Split screen https://www.w3schools.com/howto/howto_css_split_screen.asp*/
+
+/* Split the screen in half */
+
+
+/* Control the left side */
+
+.left {
+    left: 0;
+    position: absolute;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+    /*background-color: #111;*/
+}
+
+/* Control the right side */
+.right {
+    right: 0;
+    position: absolute;
+    overflow-x: auto;
+    overflow-y: auto;
+
+    white-space: nowrap; /*background-color: red;*/
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Style the image inside the centered container, if needed */
+.centered img {
+    width: 150px;
+    border-radius: 50%;
+}
+
+/*End of Split screen*/
+
+
+/*Charts Div*/
+#main-chart {
+
+    height: 500px;
+    width: 960px;
+
+}
+
+#bar-chart {
+
+    height: 450px;
+    width: 600px;
+
+}
+
+#pie-chart {
+
+    /*height: 300px;*/
+    /*width: 300px;*/
+
+}
+
+#gauge-chart {
+
+    /*height: 300px;*/
+    /*width: 300px;*/
+
+}
+
+/*End of Charts Div*/
+
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+    text-decoration: underline;
+    color: #7b94e8;
+
+}
+
+#sidebar a {
+    color: white;
+    text-decoration: none;
+}
+
+p, span {
+    color: white;
+}

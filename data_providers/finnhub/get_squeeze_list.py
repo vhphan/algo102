@@ -29,7 +29,7 @@ def get_stock_squeeze_list():
             continue
 
     if squeeze_list:
-        with open(f"data/squeeze_list_stocks_{datetime.now().strftime('%Y%m%d')}.json", 'w') as fp:
+        with open(f"results/squeeze_list_stocks.json", 'w') as fp:
             json.dump(squeeze_list, fp)
 
 

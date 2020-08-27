@@ -20,6 +20,7 @@ from binance.websockets import BinanceSocketManager
 from twisted.internet import reactor
 
 import pendulum
+import talib as ta
 
 bin_minutes = {"1m": 1, "5m": 5, "1h": 60, "4h": 240, "1d": 1440}
 
@@ -31,6 +32,85 @@ class StepSizeNotFound(Exception):
 
 class DataNotInFile(Exception):
     pass
+
+
+def linreg(df, length=20, y_name='close'):
+    # From this Pinescript below:
+    # study("Linear Regression Line",overlay=true)
+    # length = input(14)
+    # //
+    # x = n
+    # y = close
+    # x_ = sma(x,length)
+    # y_ = sma(y,length)
+    # mx = stdev(x,length)
+    # my = stdev(y,length)
+    # c = correlation(x,y,length)
+    # slope = c * (my/mx)
+    # //
+    # inter = y_ - slope*x_
+    # //
+    # reg = x*slope + inter
+    # plot(reg,color=red,transp=0)
+    df_copy = df.copy()
+    df_copy.reset_index(inplace=True)
+    df_copy.reset_index(inplace=True)
+    x = df_copy['index']
+    y = df_copy[y_name]
+    x_ = x.rolling(length).mean()
+    y_ = y.rolling(length).mean()
+    mx = x.rolling(length).std()
+    my = y.rolling(length).std()
+    c = x.rolling(length).corr(y)
+    slope = c * (my / mx)
+    inter = y_ - slope * x_
+    reg = x * slope + inter
+    reg.fillna(0, inplace=True)
+    reg.index = df.index
+    return reg
+
+
+def ttm_squeeze_indicators(df):
+    df['sma20'] = df['close'].rolling(window=20).mean()
+    df['stddev'] = df['close'].rolling(window=20).std()
+    df['lower_band'] = df['sma20'] - (2 * df['stddev'])
+    df['upper_band'] = df['sma20'] + (2 * df['stddev'])
+    df['TR'] = abs(df['high'] - df['low'])
+    df['ATR'] = df['TR'].rolling(window=20).mean()
+    df['lower_keltner'] = df['sma20'] - (df['ATR'] * 1.5)
+    df['upper_keltner'] = df['sma20'] + (df['ATR'] * 1.5)
+    # add momentum linreg
+    # from pinesript
+    # source = close
+    # val = linreg(source  -
+    # avg(
+    #   avg(
+    #       highest(high, lengthKC),
+    #       lowest(low, lengthKC)
+    #       ),
+    #   sma(close,lengthKC)
+    # ),
+    # lengthKC,0)
+
+    df_calc = df.copy()
+
+    df_calc['source'] = df['close']
+    rolling = df_calc.rolling(20)
+    df_calc['highest_high'] = rolling['high'].max()
+    df_calc['lowest_low'] = rolling['low'].max()
+
+    # avg_1 =  avg(
+    #       highest(high, lengthKC),
+    #       lowest(low, lengthKC)
+    #       ),
+
+    # avg_2 = avg(avg_1, sma20)
+    df_calc['avg_1'] = df_calc[['highest_high', 'lowest_low']].mean(axis=1)
+    df_calc['avg_ref'] = df_calc[['avg_1', 'sma20']].mean(axis=1)
+    df_input = (df_calc['source'] - df_calc['avg_ref']).to_frame()
+    df_input.columns = ['y']
+    df['linreg'] = linreg(df_input, 20, 'y')
+    return df
 
 
 class BinanceBroker:
@@ -98,7 +178,8 @@ class BinanceBroker:
     def get_account_balance(self):
         return self.client.get_account()
 
-    def get_historical_data(self, symbol, params):
+    def get_historical_data(self, symbol, params, indicators=None):
+
         pprint(params)
         filename = f'binance_{symbol}'
         # for key, value in params.items():
@@ -148,7 +229,19 @@ class BinanceBroker:
         df['symbol'] = symbol
         df['interval'] = params.get('interval')
 
-        return df[['open', 'high', 'low', 'close', 'volume', 'symbol', 'interval']]
+        basic_cols = ['open', 'high', 'low', 'close', 'volume', 'symbol', 'interval']
+
+        # add indicators
+        if indicators is not None and 'ttm-squeeze' in indicators:
+            df = ttm_squeeze_indicators(df)
+            basic_cols += [
+                'lower_band',
+                'upper_band',
+                'lower_keltner',
+                'upper_keltner',
+                'linreg',
+            ]
+        return df[basic_cols]
 
     def previous_candles(self, symbol, min_candles=200, interval=None):
 
@@ -333,25 +426,23 @@ if __name__ == '__main__':
     one_year_ago = pendulum.today('UTC').subtract(years=1).strftime('%Y-%m-%d')
     default_start_end = dict(start_str=one_year_ago, end_str=today, interval='1d')
 
-    df = bb.get_historical_data(symbol, default_start_end)
-
-
+    df = bb.get_historical_data(symbol, default_start_end, indicators='ttm-squeeze')
 
     ##
 
-    pprint(bb.client.get_symbol_info(symbol))
-    balances = bb.get_account_balance().get('balances')
+    # pprint(bb.client.get_symbol_info(symbol))
+    # balances = bb.get_account_balance().get('balances')
 
     # bb.get_symbols()
     # pprint(bb.all_symbols)
     #
 
     ##
-    symbol = 'ETHUSDT'
-    ticker = bb.client.get_symbol_ticker(symbol=symbol)
-    ticker_true = bb.true_client.get_symbol_ticker(symbol=symbol)
-    price = ticker.get('price')
-    pprint(price)
+    # symbol = 'ETHUSDT'
+    # ticker = bb.client.get_symbol_ticker(symbol=symbol)
+    # ticker_true = bb.true_client.get_symbol_ticker(symbol=symbol)
+    # price = ticker.get('price')
+    # pprint(price)
 
     ##
     # adjusted_quantity = bb.get_lot(symbol, price, 0.0001, base='BTC')

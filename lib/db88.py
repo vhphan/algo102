@@ -10,7 +10,7 @@ from lib.error_decorator import safe_run
 class DB88(object):
 
     def __init__(self, db_con, db_type='mysql'):
-
+        self.db_type = db_type
         try:
 
             if db_type == 'mysql':
@@ -26,7 +26,9 @@ class DB88(object):
                 # dict(
                 #     ep_fx=f"postgresql://{ep_fx_keys['user']}:{ep_fx_keys['password']}@{ep_fx_keys['host']}:5432/{ep_fx_keys['db']}")
 
-                self.engine = create_engine(f"postgresql://{db_con['user']}:{db_con['password']}@{db_con['host']}:{db_con['port']}/{db_con['database']}", echo=False)
+                self.engine = create_engine(
+                    f"postgresql://{db_con['user']}:{db_con['password']}@{db_con['host']}:{db_con['port']}/{db_con['database']}",
+                    echo=False)
 
         except Exception as e:
             print(e.__repr__())
@@ -72,7 +74,8 @@ class DB88(object):
             if self._conn is None:
                 self.__init__()
             else:
-                self._conn.ping(True)
+                if self.db_type == 'mysql':
+                    self._conn.ping(True)
 
             ex_result = self.cursor.execute(sql_query, params or ())
             if sql_query.lower().split()[0] in ['replace', 'update', 'insert', 'delete']:

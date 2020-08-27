@@ -165,8 +165,8 @@ def update_data_db():
     for i, symbol in enumerate(stocks_df['symbol']):
 
         # get last date of symbol in database
-        sql = f"SELECT Max(t) as max_date FROM stocks_finn_hub WHERE symbol='{symbol}'"
-        df_last = pg_db.query_df(sql)
+        sql_ = f"SELECT Max(t) as max_date FROM stocks_finn_hub WHERE symbol='{symbol}'"
+        df_last = pg_db.query_df(sql_)
 
         # only get data if last day is more thn 1 day before today
         start = one_year_ago_u
@@ -214,6 +214,9 @@ def update_data_db():
         if i % 1000 == 0 and i > 0:
             msg = f"<p>completed {i} stocks....</p>"
             send_eri_mail('phanveehuen@gmail.com', message_=msg, subject='finhubb data progress', message_type='html')
+    # update meta
+    sql_ = f"""UPDATE eproject_fx.public.mr_meta SET last_updated = '{pendulum.now(tz='UTC').strftime('%Y-%m-%d %H:%M UTC')}' WHERE job_name='update stock data'"""
+    pg_db.query(sql_)
 
 
 @Retry(tries=3, delay=120)
@@ -252,4 +255,6 @@ if __name__ == '__main__':
     # pprint(r3)
     # d = get_top_picks()
     # r = get_stock_data('LBJ', one_year_ago_u, today_u)
-    r = get_aggregate_indicators('DOCU')
+    # r = get_aggregate_indicators('DOCU')
+    sql = f"""UPDATE eproject_fx.public.mr_meta SET last_updated = '{pendulum.now(tz='UTC').strftime('%Y-%m-%d %H:%M UTC')}' WHERE job_name='update stock data'"""
+    pg_db.query(sql)
