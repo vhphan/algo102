@@ -196,7 +196,7 @@ def update_data_db():
 
             if j % 5 == 0 and j > 0 and j != last_slept_at:
                 print('sleeping for 5 seconds...')
-                time.sleep(5)
+                time.sleep(10)
                 last_slept_at = j
 
             if candles_df is not None and len(candles_df):
@@ -219,9 +219,10 @@ def update_data_db():
     pg_db.query(sql_)
 
 
-@Retry(tries=3, delay=120)
+@Retry(tries=3, delay=360)
 def get_basic_financials(symbol, metric):
     bs = finnhub_client.company_basic_financials(symbol=symbol, metric=metric)
+    print(f'successful request for {symbol} at {pendulum.now()}')
     return bs.to_dict()
 
 

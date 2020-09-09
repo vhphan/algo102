@@ -2,6 +2,7 @@
 # import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import sqlalchemy
@@ -69,8 +70,15 @@ def top_coin_cmc():
         print(e)
 
 
+def save_top_coins():
+    symbols_file = f"{Path(__file__).parent.absolute()}/results/all_tickers_cmc.json"
+    top_coins = top_coin_cmc()
+    with open(symbols_file, 'w') as fp:
+        json.dump(top_coins['data'], fp)
+
+
 def get_crypto_squeeze_list():
-    symbols_file = f"results/all_tickers_cmc.json"
+    symbols_file = f"{Path(__file__).parent.absolute()}/results/all_tickers_cmc.json"
     if not os.path.isfile(symbols_file):
         top_coins = top_coin_cmc()
         with open(symbols_file, 'w') as fp:
@@ -99,7 +107,7 @@ def get_crypto_squeeze_list():
             continue
 
     if squeeze_list:
-        with open(f"results/squeeze_list.json", 'w') as fp:
+        with open(f"{Path(__file__).parent.absolute()}/results/squeeze_list.json", 'w') as fp:
             recipient, message, subject = ['phanveehuen@gmail.com',
                                            f'crypto squeeze list successfully generated at {datetime.now()}',
                                            'squeezed']
@@ -108,5 +116,5 @@ def get_crypto_squeeze_list():
 
 
 if __name__ == '__main__':
-    top_coins = top_coin_cmc()
+    save_top_coins()
     get_crypto_squeeze_list()

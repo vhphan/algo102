@@ -70,9 +70,9 @@
                     <li>
                         <a href="#content" id="section1">Main</a>
                     </li>
-<!--                    <li>-->
-<!--                        <a href="#indicators" id="section2">Indicators</a>-->
-<!--                    </li>-->
+                    <!--                    <li>-->
+                    <!--                        <a href="#indicators" id="section2">Indicators</a>-->
+                    <!--                    </li>-->
                     <li>
                         <a href="#about-content" id="section3">About</a>
                     </li>
@@ -95,7 +95,7 @@
                     <span></span>
                     <span></span>
                 </button>
-                <span class="mx-auto"><h5 id="current-page" class="pt-2"> Technical Indicator Scanner (TTM Squeeze) [Crypto] </h5>
+                <span class="mx-auto"><h5 id="current-page" class="pt-2"> TTM Squeeze Indicator Scanner [Crypto] </h5>
 </span>
                 <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -133,56 +133,35 @@
                 </p>
             </div>
             <div class="row" id="main">
-                    <div class="col-md-4" id="chart-type">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary bg-success text-white" type="button">Chart
-                                    Type
-                                </button>
-                            </div>
-                            <label for="select-chart-type"></label><select class="custom-select"
-                                                                           id="select-chart-type">
-                            <option value="1">Basic</option>
-                            <option value="2">Basic+Vol</option>
-                            <!--                                                    <option value="3">Three</option>-->
+                <div class="col-md-5" id="chart-type">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary bg-success text-white" type="button">Chart
+                                Type
+                            </button>
+                        </div>
+                        <label for="select-chart-type"></label><select class="custom-select"
+                                                                       id="select-chart-type">
+                        <option value="1">Candlestick + Momentum</option>
+                        <option value="2">Candlestick + Vol + Momentum</option>
+                        <!--                                                    <option value="3">Three</option>-->
+                    </select>
+                    </div>
+                </div>
+                <div class="col-md-4 ml-auto mr-5">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary bg-success text-white" type="button">TICKER
+                            </button>
+                        </div>
+                        <select class="custom-select" id="select-top-picks">
+                            <!--                    <option selected>Choose...</option>-->
+                            <!--                    <option value="1">One</option>-->
+                            <!--                    <option value="2">Two</option>-->
+                            <!--                    <option value="3">Three</option>-->
                         </select>
-                        </div>
                     </div>
-                    <div class="col-md-4 ml-auto mr-5">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary bg-success text-white" type="button">TICKER
-                                </button>
-                            </div>
-                            <select class="custom-select" id="select-top-picks">
-                                <!--                    <option selected>Choose...</option>-->
-                                <!--                    <option value="1">One</option>-->
-                                <!--                    <option value="2">Two</option>-->
-                                <!--                    <option value="3">Three</option>-->
-                            </select>
-                        </div>
-                    </div>
-
-                    <!--region Description-->
-                    <!--                    <div class="col-6" id="market-cap-min">-->
-                    <!--                        <div class="input-group mb-3">-->
-                    <!--                            <div class="input-group-prepend">-->
-                    <!--                                <button class="btn btn-outline-secondary bg-success text-white" type="button">Market-->
-                    <!--                                    Cap-->
-                    <!--                                </button>-->
-                    <!--                            </div>-->
-                    <!--                            <label for="select-market-cap-min"></label><select class="custom-select"-->
-                    <!--                                                                               id="select-market-cap-min">-->
-                    <!--                            <option value=0 selected>All</option>-->
-                    <!--                            <option value=100>>100 Million</option>-->
-                    <!--                            <option value=500>>500 Million</option>-->
-                    <!--                            <option value=1000>>1 Billion</option>-->
-                    <!--                            &lt;!&ndash;                                                    <option value="3">Three</option>&ndash;&gt;-->
-                    <!--                        </select>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                    <!--endregion-->
-
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -201,18 +180,23 @@
 
         <div class="col-12 mt-5 p-5 mb-5" id="about-content">
             <h5>About</h5>
-            <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
-<!--            <p>Objectives:</p>-->
-<!--            <ol>-->
-<!--                <li>Educational purpose.</li>-->
-<!--                <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or-->
-<!--                    investment advice.</em></li>-->
-<!--            </ol>-->
-            <p>Crpyto pairs with base = [USDT, BTC, ETH] traded on Binance is scanned for TTM-Squeeze.</p>
-            <h6>Reference/Tutorials/Inspiration from:</h6>
+            <p>The script scans for symbols breaking out of a 'consolidation' phase using the TTM Squeeze Indicator. Bullish or Bearish breakouts are scanned. All Crypto pairs with quote asset = [USDT, BTC, ETH] traded on Binance is scanned for 'breakouts' as indicated by TTM-Squeeze. The symbols identified as breaking out are shown.</p>
+            <p>A 'consolidation' is identified when the Bollinger Band moves within the Keltner channel (called 'squeeze'). A 'breakout' is then identified as the Bollinger Bands starts to 'break out' of the Keltner channel i.e. breaking out of the 'squeeze'</p>
+            <!--            <p>Objectives:</p>-->
+            <!--            <ol>-->
+            <!--                <li>Educational purpose.</li>-->
+            <!--                <li>DISCLAIMER: <em>This app and the information contained herein do not constitute any financial or-->
+            <!--                    investment advice.</em></li>-->
+            <!--            </ol>-->
+            <p></p>
+            <h6>Reference/Tutorials from:</h6>
             <ul>
-                <li><a target="_blank" href="https://www.youtube.com/watch?v=YhkNoOqYp9A">Youtube video on 'Part Time Larry' channel</a></li>
-                <li><a target="_blank" href="https://www.tradingview.com/script/nqQ1DT5a-Squeeze-Momentum-Indicator-LazyBear/#chart-view-comments">Trading View Indicator by 'Lazy Bear'.</a></li>
+                <li><a target="_blank" href="https://www.youtube.com/watch?v=YhkNoOqYp9A">Youtube video on 'Part Time
+                    Larry' channel</a></li>
+                <li><a target="_blank"
+                       href="https://www.tradingview.com/script/nqQ1DT5a-Squeeze-Momentum-Indicator-LazyBear">The Indicator by 'Lazy Bear' in Pinescript.</a> PS. The volatility momentum indicator is based on linear regression
+                    and is adapted from this Pinescript.
+                </li>
 
             </ul>
             <p>
@@ -224,7 +208,7 @@
                 <!--                        <a href="https://facebook.github.io/prophet/">Facebook Prophet library (Python)</a>-->
                 <!--                    </li>-->
                 <li>
-                    <a href="https://echarts.apache.org/en/index.html">Javascript Charting Library, ECharts.js</a>
+                    Javascript Charting Library, <a href="https://echarts.apache.org/en/index.html">ECharts.js</a>
                 </li>
                 <li>
                     Python Flask on backend. Vanilla Javascript on the frontend.
@@ -234,6 +218,8 @@
                 </li>
 
             </ul>
+            <p>Developed by <a href="mailto: phanveehuen@gmail.com">Vee H. Phan</a></p>
+
             <div style="height: 300px"></div>
 
         </div>

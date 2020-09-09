@@ -14,6 +14,7 @@ sys.path.extend([
     f'{algo102_path}',
 ])
 
+
 if __name__ == "__main__":
     application.run(debug=True)
     # Set this application constants here

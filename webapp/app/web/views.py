@@ -8,8 +8,8 @@ web = Blueprint("web", __name__,
 
 @web.route('/')
 def web_index():
-    # return 'hello web'
-    return render_template('screener.html')
+    return 'hello web'
+    # return render_template('screener.html')
 
 
 @web.route('/ttm-squeeze')

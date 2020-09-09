@@ -89,7 +89,7 @@ def apply_the_filters(start_row=0, use_forecast=False, pc_higher_sp=10, min_to_5
             continue
 
         if i % 3 == 0:
-            sleep_time = randint(1, 5)
+            sleep_time = randint(3, 8)
             print(i, f'sleeping {sleep_time} seconds')
             time.sleep(sleep_time)
 

@@ -6,7 +6,7 @@ import sys
 
 from lib.error_decorator import safe_run
 from data_providers.finnhub.get_data_finnhub import get_stock_data, get_symbols, get_top_picks, get_company_profile, \
-    get_recommendation_trends, get_aggregate_indicators, get_tech_ind
+    get_recommendation_trends, get_aggregate_indicators, get_tech_ind, get_stock_data_db
 from cache import cache
 from data_providers.general.breakout import get_breakout_symbols_db
 
@@ -25,7 +25,8 @@ default_start_end = dict(start=one_year_ago_ts, end=current_ts, timeframe='D')
 @fh.route("/hist/<symbol>/<timeframe>/<start>/<end>")
 @cache.memoize(timeout=300)
 def historical(symbol, start, end, timeframe):
-    candles_df = get_stock_data(symbol=symbol, start=start, end=end, timeframe=timeframe)
+    # candles_df = get_stock_data(symbol=symbol, start=start, end=end, timeframe=timeframe)
+    candles_df = get_stock_data_db(symbol=symbol, num_months_ago=13)
     candles = candles_df[['t', 'o', 'h', 'l', 'c', 'v']].rename(columns={
         't': 'time',
         'o': 'open',

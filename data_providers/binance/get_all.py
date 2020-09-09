@@ -9,7 +9,7 @@ import math
 import os.path
 import time
 
-import pendulum as pendulum
+import pendulum
 from binance.client import Client
 from datetime import timedelta, datetime
 from dateutil import parser
@@ -56,7 +56,7 @@ def get_all_binance(symbol, kline_size, save=False, save_to_db=False):
         print(f'Downloading all available {kline_size} data for {symbol}. Be patient..!')
     else:
         print(
-            f'Downloading {delta_min:d} minutes of new data available for {symbol}, i.e. {available_data:d} instances of {kline_size} data.')
+            f'Downloading {delta_min: f} minutes of new data available for {symbol}, i.e. {available_data:d} instances of {kline_size} data.')
     klines = binance_client.get_historical_klines(symbol,
                                                   kline_size,
                                                   oldest_point.strftime("%d %b %Y %H:%M:%S"),
@@ -119,7 +119,7 @@ def get_all():
 def get_all_tickers():
     tickers = binance_client.get_all_tickers()
     symbols = [binance_client.get_symbol_info(ticker.get('symbol')) for ticker in tickers]
-    with open(f"results/all_tickers_{datetime.today().strftime('%Y%m%d')}.json", 'w') as fp:
+    with open(f"{Path(__file__).parent.absolute()}/results/all_tickers_binance.json", 'w') as fp:
         json.dump(symbols, fp)
     return symbols
 
@@ -127,5 +127,5 @@ def get_all_tickers():
 if __name__ == '__main__':
     # d = get_all_tickers()
     # get_all()
+    pass
 
-    save_files_to_db()
