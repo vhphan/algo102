@@ -20,4 +20,5 @@ def schedule_tasks():
 
 if __name__ == '__main__':
     scheduler = schedule_tasks()
+    print('cron is starting...')
     scheduler.start()
