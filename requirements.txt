@@ -62,7 +62,7 @@ filelock==3.0.10
 Fiona==1.8.4
 Flask
 Flask-Compress==1.4.0
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 fsspec==0.7.3
 future==0.17.1
 GDAL==2.3.3
